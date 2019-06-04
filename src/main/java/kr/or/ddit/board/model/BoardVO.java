@@ -13,16 +13,15 @@ public class BoardVO {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public BoardVO(int id, String userId, String name, String use_yn,
-			Date reg_dt) {
+	// 생성용
+	public BoardVO(int id, String userId, String name, String use_yn) {
 		super();
 		this.id = id;
 		this.userId = userId;
 		this.name = name;
 		this.use_yn = use_yn;
-		this.reg_dt = reg_dt;
 	}
-
+	
 	public int getId() {
 		return id;
 	}

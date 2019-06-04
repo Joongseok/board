@@ -28,10 +28,9 @@
 			<label for="userId" class="sr-only">userId</label> 
 			<input type="text" name="userId" id="userId" class="form-control" placeholder="userId" required value="${param.userId}">
 			 <label	for="password" class="sr-only">password</label> 
-			 <input	type="password" name="password" id="password" class="form-control" value="brown1234" placeholder="password" required>
-			<button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="button">login </button>
+			 <input	type="password" name="pass" id="password" class="form-control" value="brown1234" placeholder="password" required>
+			<button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="submit">login </button>
 		</form>
-
 	</div>
 </body>
 </html>

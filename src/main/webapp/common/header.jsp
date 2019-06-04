@@ -12,7 +12,7 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#"> JSP/SPRING 
+			<a class="navbar-brand" href="#"> 
 			<!-- 사용자가 로그인 하지 않고 메인화면으로 직접 접속했을 경우
 				(localhost/jsp/main.jsp) 접속하지 않은 사용자 입니다 문구를 표현-->
 			<c:choose> 

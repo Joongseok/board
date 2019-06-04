@@ -2,6 +2,44 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="user">
-	                    			
+<mapper namespace="board">
+	<select id="boardsCnt" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD
+	</select>
+	<select id="boardList" resultType="boardVo">
+		SELECT * 
+		FROM BOARD
+		WHERE USE_YN = 'true'
+	</select>	
+	<select id="boardAllList" resultType="boardVo">
+		SELECT * 
+		FROM BOARD
+	</select>	
+	<select id="getBoard" parameterType="int" resultType="boardVo">
+		SELECT *
+		FROM BOARD
+		WHERE ID = #{id}
+	</select>
+	<insert id="insertBoard" parameterType="boardVo">
+		INSERT INTO BOARD
+		VALUES
+				(	 #{id}
+					,#{userId}
+					,#{name}
+					,#{use_yn}
+					,SYSDATE
+				)
+	</insert>
+	
+	<delete id="deleteBoard" parameterType="int">
+		DELETE 
+		FROM BOARD
+		WHERE ID = #{id}
+	</delete>
+	<update id="updateBoard" parameterType="boardVo">
+		UPDATE BOARD
+		SET USE_YN = #{use_yn}
+		WHERE ID = #{id}
+	</update>
 </mapper>
