@@ -4,12 +4,13 @@
 <div class="col-sm-3 col-md-2 sidebar">
 	<ul class="nav nav-sidebar">
 		<li class="active"><a
-			href="${pageContext.request.contextPath}/boardManager">게시판 생성</a></li>
+			href="${pageContext.request.contextPath}/boardManager">게시판 관리</a></li>
 			
 			<hr>
 			<c:forEach items="${boardList }" var="board">
 				<li class="active"><a
-					href="${pageContext.request.contextPath}/boardController">${board.name }</a></li>
+					href="${pageContext.request.contextPath}/noticeController?id=${board.id}">${board.name }</a>
+					</li>
 			</c:forEach>
 <!-- 		<li class="active"><a -->
 <%-- 			href="${pageContext.request.contextPath}/userPagingList">사용자페이징리스트</a></li> --%>

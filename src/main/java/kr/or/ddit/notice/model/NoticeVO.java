@@ -5,29 +5,35 @@ import java.util.Date;
 public class NoticeVO {
 
 	private int notiId;	//게시글아이디
-	private String userid;  //작성자
+	private String userId;  //작성자
 	private String title;   //제목
 	private String content; //내용
 	private Date reg_dt;  //작성일시
 	private int parentId;//부모 게시글아이디
 	private int id;      //게시판아이디
 	private String del_yn;  //삭제여부
+	private int rn; // 삭제여부에 따른 게시글의 번호
 	
+	public int getRn() {
+		return rn;
+	}
+
+	public void setRn(int rn) {
+		this.rn = rn;
+	}
+
 	public NoticeVO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public NoticeVO(int notiId, String userid, String title, String content,
-			Date reg_dt, int parentId, int id, String del_yn) {
+	public NoticeVO(int notiId, String userId, String title, String content,
+			  int id) {
 		super();
 		this.notiId = notiId;
-		this.userid = userid;
+		this.userId = userId;
 		this.title = title;
 		this.content = content;
-		this.reg_dt = reg_dt;
-		this.parentId = parentId;
 		this.id = id;
-		this.del_yn = del_yn;
 	}
 
 	public int getNotiId() {
@@ -39,11 +45,11 @@ public class NoticeVO {
 	}
 
 	public String getUserid() {
-		return userid;
+		return userId;
 	}
 
 	public void setUserid(String userid) {
-		this.userid = userid;
+		this.userId = userid;
 	}
 
 	public String getTitle() {
@@ -96,7 +102,7 @@ public class NoticeVO {
 
 	@Override
 	public String toString() {
-		return "NoticeVO [notiId=" + notiId + ", userid=" + userid + ", title="
+		return "NoticeVO [notiId=" + notiId + ", userid=" + userId + ", title="
 				+ title + ", content=" + content + ", reg_dt=" + reg_dt
 				+ ", parentId=" + parentId + ", id=" + id + ", del_yn="
 				+ del_yn + "]";

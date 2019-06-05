@@ -24,12 +24,17 @@
 <script>
 $(document).ready(function () {
 	
+	if( $(".update_use_yn").val() == "true"){
+		$(".updateUse_yn").val("true");
+	}
+	
 	$("#createClick").on("click", function (){
 		if($("#user_info").val() == ""){
 			alert("로그인을 먼저 해주세요");
 			return;
 		}
 		if($("#create_use_yn").val() == "true"){
+			
 			$("#use_yn").val("true");
 		}
 		if($("#createBoardName").val() == ""){

@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Smart Editor</title>
-
+<%@include file="/common/basicLib.jsp" %>
 <!-- Favicon -->
 <link rel="shortcut icon" href="favicon.ico" />
 
@@ -52,6 +52,22 @@ $(document).ready(function() {
 			}
 		}
 	})
+	count = parseInt(2);
+	$("#count").val(count);
+	$("#pp").on("click", function (){
+		
+		if($("#count").val() == 6){
+			alert("파일은 다섯개까지만 첨부하실수 있습니다.")
+			return;
+		}
+// 		$(":file").append("<p>gd </p>");
+		$('<input type="file" id="file2" name="file">').insertAfter("#file");
+		$("#file2").attr("name", "file" + count);
+		$("#file2").attr("id", "file" + count);
+		count +=parseInt(1);
+		$("#count").val(count);
+	});
+	
 });
 
 // 필수값 Check
@@ -69,10 +85,24 @@ function validation(){
 </script>
 </head>
 <body>
-<form action="result.jsp" method="post" id="frm">
+<form  action="${pageContext.request.contextPath}/noticeForm" method="post" id="frm" enctype="multipart/form-data">
+<div class="form-group">
+	<label for="title" class="col-sm-1 control-label">제목</label>
+	<div class="col-sm-10">
+<%-- 	<label class="control-label">${userVo.userId }</label> --%>
+		<input type="text" class="form-control" id="title"
+			name="title" value="${param.userId}" placeholder="제목">
+	</div>
+</div>
+
 	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;"></textarea> 
+<input type="file" name="file" id="file">
+<img alt="" id="pp" src="${pageContext.request.contextPath }/img/sally.png">
+
+<input type="hidden" id="count" >
+<input type="hidden" name="id" value="${id }">
+<input type="button" class="col-sm-1 btn btn-default" id="savebutton" value="등록" />
 </form>
-<input type="button" id="savebutton" value="서버전송" />
 </body>
 </html>
 

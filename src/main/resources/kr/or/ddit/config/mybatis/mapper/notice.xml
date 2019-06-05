@@ -3,5 +3,55 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="notice">
-	                    			
+
+<select id="noticeList" parameterType="map" resultType="noticeVo">
+	<![CDATA[
+		SELECT *
+		FROM(
+		    (SELECT A.*
+		    FROM(
+		        (SELECT N.*, ROWNUM RN
+		        FROM NOTICE N, BOARD B
+		        WHERE B.ID = #{id} AND N.ID = #{id}
+		        AND N.DEL_YN = 'true'
+		        ORDER BY RN DESC) A)))
+		WHERE RN >= (#{page} - 1) * #{pageSize} + 1
+		AND RN <= #{page} * #{pageSize}
+		ORDER BY REG_DT DESC
+	]]>
+</select>
+	                    	
+<select id="noticeCnt" parameterType="boardVo" resultType="int">
+	SELECT COUNT(*)
+	FROM NOTICE N, BOARD B
+	WHERE B.ID = #{id} AND N.ID = #{id}
+	AND N.DEL_YN = 'true'
+</select>	
+
+<select id="noticeAllCnt" resultType="int">
+	SELECT COUNT(*)
+	FROM NOTICE
+</select>
+
+<insert id="insertNotice" parameterType="noticeVo">
+	INSERT INTO NOTICE
+	VALUES
+	(
+		 #{notiId}
+		,#{userId}
+		,#{title}
+		,#{content}
+		,SYSDATE
+		,NULL
+		,#{id}
+		,'true'
+		,NULL
+	)
+</insert>
+
+<select id="getNotice" parameterType="int" resultType="noticeVo">
+	SELECT *
+	FROM NOTICE
+	WHERE NOTIID = #{notiId}
+</select>	
 </mapper>
