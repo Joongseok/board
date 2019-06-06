@@ -72,7 +72,7 @@
 						<div class="table-responsive">
 							<table class="table table-striped">
 								<tr>
-									<th>게시글 번호(삭제여부를 가려서 번호를 출력할것)</th>
+									<th>번호</th>
 									<th>제목</th>
 									<th>작성자</th>
 									<th>작성일시</th>
@@ -82,9 +82,21 @@
 									<form>
 										<input type="hidden" class="idHidden" value="${notice.notiId}">
 									</form>
-										<td class="notiId">${notice.rn}</td>
-										<td>${notice.title}</td>
-										<td>${USER_INFO.userId}</td>
+										<td class="notiId">${notice.groupId}</td>
+										<td>
+										 	<c:choose>
+										 		<c:when test="${notice.lv > 1 }">
+										 			<c:forEach begin="1" end="${notice.lv }">
+										 				&nbsp;&nbsp;&nbsp;&nbsp;
+											 		</c:forEach>
+											 		${notice.title}
+										 		</c:when>
+										 		<c:otherwise>
+											 		${notice.title}
+										 		</c:otherwise>
+										 	</c:choose>
+										 </td>
+										<td>${notice.userId}</td>
 										<td><fmt:formatDate value="${notice.reg_dt }" pattern="yyyy-MM-dd a h:mm:ss"/> </td>
 									</tr>
 								</c:forEach>

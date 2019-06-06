@@ -1,20 +1,17 @@
 package kr.or.ddit.notice.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import kr.or.ddit.board.model.BoardVO;
 import kr.or.ddit.board.service.BoardService;
@@ -25,59 +22,55 @@ import kr.or.ddit.notice.service.NoticeService;
 import kr.or.ddit.uploadFile.model.UploadFileVO;
 import kr.or.ddit.uploadFile.service.IUploadFileService;
 import kr.or.ddit.uploadFile.service.UploadFileService;
-import kr.or.ddit.user.model.UserVO;
 import kr.or.ddit.util.PartUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-@WebServlet("/noticeForm")
-@MultipartConfig(maxFileSize=1024*1024*3, maxRequestSize=1024*1024*15)
-public class NoticeFormController extends HttpServlet {
+@WebServlet("/updateNotice")
+public class UpdateNotice extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private static final Logger logger = LoggerFactory
-			.getLogger(NoticeFormController.class);
-	
-	private IBoardService boardService;
-	private IUploadFileService uploadFileService;
 	private INoticeService noticeService;
+	private IUploadFileService uploadFileService;
+	private IBoardService boardService;
+	private static final Logger logger = LoggerFactory
+			.getLogger(UpdateNotice.class);
 	
 	@Override
 	public void init() throws ServletException {
-		boardService = new BoardService();
 		noticeService = new NoticeService();
 		uploadFileService = new UploadFileService();
+		boardService = new BoardService();
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("noticeFormController doGet()");
+		logger.debug("updateNotice doGet()");
 		
-		request.setAttribute("id", request.getParameter("id"));
-		logger.debug("notiForm doGet() boardVo.id : {}", request.getParameter("id"));
-		request.getRequestDispatcher("/notice/noticeForm.jsp").forward(request, response);
+		String notiIdStr = request.getParameter("notiId");
+		int notiId = Integer.parseInt(notiIdStr);
+		
+		NoticeVO noticeVo = noticeService.getNotice(notiId);
+		
+		request.setAttribute("noticeVo", noticeVo);
+		request.getRequestDispatcher("/notice/updateNotice.jsp").forward(request, response);
+		
 	}
 
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//한글 인코딩을 위한 UTF-8 설정
-		logger.debug("noticeFormController doPost()");
-		request.setCharacterEncoding("utf-8");
+		logger.debug("updateNotice doPost()");
 		
-		int id = Integer.parseInt(request.getParameter("id"));
-		BoardVO boardVo = boardService.getBoard(id);
+		String notiIdStr = request.getParameter("notiId");
+		String title = request.getParameter("title");
+		String content = request.getParameter("smarteditor");
 		
-		String userId = ((UserVO)request.getSession().getAttribute("USER_INFO")).getUserId();
-		logger.debug("notiForm doPost() boardVo  : {} ", boardVo);
+		int notiId = Integer.parseInt(notiIdStr);
 		
-		String title = request.getParameter("title"); // 제목
-		String content = request.getParameter("smarteditor"); //내용
-		logger.debug("title : {}", title);
-		logger.debug("content : {}", content);
-		int notiId = noticeService.noticeAllCnt() == 0 ? 1 : noticeService.noticeMaxId() + 1;
-		NoticeVO noticeVo = new NoticeVO(notiId, userId, title, content, id, notiId);
+		List<UploadFileVO> dbUploadFileList = uploadFileService.getUploadFileList(notiId);
+		
+		uploadFileService.dbDeleteFile(dbUploadFileList);
+		
+		NoticeVO noticeVo = new NoticeVO(notiId, title, content);
 		logger.debug("noticeVo : {}", noticeVo);
-		noticeService.insertNotice(noticeVo);
+		noticeService.updateNotice(noticeVo);
+		BoardVO boardVo = boardService.getBoard(noticeVo.getId());
 		
 		Part file = request.getPart("file");
 		Part file2 = request.getPart("file2");
@@ -106,7 +99,6 @@ public class NoticeFormController extends HttpServlet {
 		uploadFileService.insertUploadFile(uploadFileList);
 		PartUtil.uploadFileListClear();
 		response.sendRedirect(request.getContextPath() + "/main.jsp");
-		
 	}
 
 }

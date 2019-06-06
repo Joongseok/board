@@ -4,23 +4,30 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="notice">
 
+<!-- 계층형 게시글(답글) -->
 <select id="noticeList" parameterType="map" resultType="noticeVo">
 	<![CDATA[
-		SELECT *
-		FROM(
-		    (SELECT A.*
-		    FROM(
-		        (SELECT N.*, ROWNUM RN
-		        FROM NOTICE N, BOARD B
-		        WHERE B.ID = #{id} AND N.ID = #{id}
-		        AND N.DEL_YN = 'true'
-		        ORDER BY RN DESC) A)))
-		WHERE RN >= (#{page} - 1) * #{pageSize} + 1
-		AND RN <= #{page} * #{pageSize}
-		ORDER BY REG_DT DESC
+		select *
+		from
+		    (select a.*, rownum rn
+		    from
+		        (select nt.NOTIID, nt.PARENTID, lpad(' ', (level-1)*4) || nt.title title, level lv, nt.groupId, nt.reg_dt, nt.userId
+		        from notice nt, board bd
+		        where nt.id = #{id} and bd.id = #{id}
+		        and nt.del_yn = 'true'
+		        start with nt.PARENTID is null
+		        connect by prior nt.NOTIID = nt.PARENTID
+		        order siblings by nt.GROUPID desc, nt.notiid)a)b
+		where b.rn >= #{page}
+		and b.rn <=#{pageSize}
 	]]>
 </select>
-	                    	
+<select id="noticeMaxId" resultType="int">
+	SELECT MAX(NOTIID)
+	FROM NOTICE
+</select>
+
+<!-- 해당 게시판의 게시글 전체 개수 -->                	
 <select id="noticeCnt" parameterType="boardVo" resultType="int">
 	SELECT COUNT(*)
 	FROM NOTICE N, BOARD B
@@ -28,11 +35,13 @@
 	AND N.DEL_YN = 'true'
 </select>	
 
+<!-- 게시글의 전체 개수 -->
 <select id="noticeAllCnt" resultType="int">
 	SELECT COUNT(*)
 	FROM NOTICE
 </select>
 
+<!-- 처음 게시글 생성할때 (답글 X) -->
 <insert id="insertNotice" parameterType="noticeVo">
 	INSERT INTO NOTICE
 	VALUES
@@ -45,13 +54,21 @@
 		,NULL
 		,#{id}
 		,'true'
-		,NULL
+		,#{groupId}
 	)
 </insert>
 
+<!-- 해당 번호의 게시글 정보 -->
 <select id="getNotice" parameterType="int" resultType="noticeVo">
 	SELECT *
 	FROM NOTICE
 	WHERE NOTIID = #{notiId}
 </select>	
+
+<update id="updateNotice" parameterType="noticeVo">
+	UPDATE NOITICE
+	SET TITLE = #{title}
+		,CONTENT = #{content}
+	WHERE NOTIID = #{notiId}
+</update>
 </mapper>

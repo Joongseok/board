@@ -16,6 +16,12 @@
 <link href="${pageContext.request.contextPath}/css/signin.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/js.cookie.js"></script>
+<script>
+
+	var cookie = Cookies.get("userIdCookie");
+	if(cookie = "userId")
+		
+</script>
 </head>
 
 <body>

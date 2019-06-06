@@ -54,4 +54,23 @@ public interface INoticeService {
 	* Method 설명 : 게시글 선택 조회
 	*/
 	NoticeVO getNotice(int notiId);
+
+	/**
+	* Method : noticeMaxId
+	* 작성자 : PC25
+	* 변경이력 :
+	* @return
+	* Method 설명 : 게시글의 가장 마지막 번호
+	*/
+	int noticeMaxId();
+
+	/**
+	* Method : updateNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param noticeVo
+	* @return
+	* Method 설명 : 게시글 수정
+	*/
+	int updateNotice(NoticeVO noticeVo);
 }

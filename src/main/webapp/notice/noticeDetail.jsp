@@ -18,10 +18,20 @@
 <link rel="icon" href="../../favicon.ico">
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <%@include file="/common/basicLib.jsp" %>
-
+<style>
+	.hiddenFile{
+	visibility: hidden;
+	}
+</style>
 <script>
 $("#content").val();
 $(document).ready(function (){
+	
+	$(".fileLabel").on("click", function(){
+		alert("fileLable");
+		$("#frm").submit();
+	});
+	
 	var msg = '${msg}';
 	if(msg != ''){
 		alert(msg);
@@ -104,7 +114,7 @@ function dataInit(){
 						<h2 class="sub-header">게시글 조회</h2>
 							
 							
-						<form id="frm" class="form-horizontal" action="${pageContext.request.contextPath}/noticeForm" 
+						<form id="frm" class="form-horizontal" action="${pageContext.request.contextPath}/fileDownload" 
 						method="post" role="form"
 						enctype="multipart/form-data"
 						>
@@ -137,7 +147,8 @@ function dataInit(){
 							<label for="userId" class="col-sm-2 control-label">첨부파일</label>		
 								<div class="col-sm-8">
 								<c:forEach items="${uploadFileList}" var="file">
-									${file.fileName }
+										<input type="hidden" class="hiddenFile" name="fileId" value="${file.fileId}">
+									<label class="fileLabel">${file.fileName }</label><br>
 								</c:forEach>
 								</div>
 							</div>
@@ -151,13 +162,15 @@ function dataInit(){
 <!-- 										name="modifyFile" class="btn btn-default" > -->
 <!-- 							</div> -->
 							
-<!-- 							<div class="form-group"> -->
-<!-- 								<div class="col-sm-offset-2 col-sm-10"> -->
-<!-- 									<button id="userRegBtn" type="button" class="btn btn-default">사용자 등록</button> -->
-<!-- 								</div> -->
-<!-- 							</div> -->
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<a href="${pageContext.request.contextPath }/updateNotice?notiId=${noticeVo.notiId}"><button id="updateBtn" type="button" class="btn btn-default">수정하기</button> </a>
+									<c:if test="${noticeVo.userId eq USER_INFO.userId }">
+									<a href="${pageContext.request.contextPath }/deleteNotice?notiId=${noticeVo.notiId}"><button id="updateBtn" type="button" class="btn btn-default">삭제하기</button> </a>
+									</c:if>
+								</div>
+							</div>
 						</form>
-						
 					</div>
 				</div>
 			</div>

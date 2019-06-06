@@ -85,5 +85,28 @@ public class NoticeService implements INoticeService {
 	public NoticeVO getNotice(int notiId) {
 		return noticeDao.getNotice(notiId);
 	}
+	/**
+	* Method : noticeMaxId
+	* 작성자 : PC25
+	* 변경이력 :
+	* @return
+	* Method 설명 : 게시글의 가장 마지막 번호
+	*/
+	@Override
+	public int noticeMaxId() {
+		return noticeDao.noticeMaxId();
+	}
+	/**
+	* Method : updateNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param noticeVo
+	* @return
+	* Method 설명 : 게시글 수정
+	*/
+	@Override
+	public int updateNotice(NoticeVO noticeVo) {
+		return noticeDao.updateNotice(noticeVo);
+	}
 
 }

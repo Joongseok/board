@@ -21,5 +21,17 @@
 	SELECT * 
 	FROM   UPLOADFILE
 	WHERE  NOTIID = #{notiId}
-</select>            			
+</select>         
+
+<select id="getFileVo" parameterType="string" resultType="uploadFileVo">
+	SELECT *
+	FROM UPLOADFILE
+	WHERE FILEID = #{fileId}
+</select>   	
+
+<delete id="deleteUploadFile" parameterType="string">
+	DELETE
+	FROM UPLOADFILE
+	WHERE FILEID = #{fileId}
+</delete>		
 </mapper>

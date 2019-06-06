@@ -88,7 +88,38 @@ public class NoticeDao implements INoticeDao {
 	public NoticeVO getNotice(int notiId) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
 		NoticeVO noticeVo = sqlSession.selectOne("notice.getNotice", notiId);
+		sqlSession.close();
 		return noticeVo;
+	}
+	/**
+	* Method : noticeMaxId
+	* 작성자 : PC25
+	* 변경이력 :
+	* @return
+	* Method 설명 : 게시글의 마지막 번호
+	*/
+	@Override
+	public int noticeMaxId() {
+		SqlSession sqlSession = MybatisUtil.getSqlSession();
+		int noticeMaxId = sqlSession.selectOne("notice.noticeMaxId");
+		sqlSession.close();
+		return noticeMaxId;
+	}
+	/**
+	* Method : updateNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param noticeVo
+	* @return
+	* Method 설명 : 게시글 수정
+	*/
+	@Override
+	public int updateNotice(NoticeVO noticeVo) {
+		SqlSession sqlSession =MybatisUtil.getSqlSession();
+		int updateNotice = sqlSession.update("notice.updateNotice", noticeVo);
+		sqlSession.commit();
+		sqlSession.close();
+		return updateNotice;
 	}
 
 }

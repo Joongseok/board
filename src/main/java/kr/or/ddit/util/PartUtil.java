@@ -129,4 +129,8 @@ public class PartUtil {
 		return uploadFileList;
 	}
 	
+	public static void uploadFileListClear(){
+		uploadFileList.clear();
+	}
+	
 }

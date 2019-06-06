@@ -8,11 +8,14 @@ import kr.or.ddit.uploadFile.model.UploadFileVO;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UploadFileDaoTest {
 
 	private IUploadFileDao uploadFileDao;
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(UploadFileDaoTest.class);
 	@Before
 	public void setup(){
 		uploadFileDao = new UploadFileDao();
@@ -51,6 +54,25 @@ public class UploadFileDaoTest {
 		/***Then***/
 		assertEquals(5, uploadFileList.size());
 
+	}
+	
+	/**
+	* Method : getFileVoTest
+	* 작성자 : PC25
+	* 변경이력 :
+	* Method 설명 : 아이디에 해당하는 파일객체 얻는 테스트
+	*/
+	@Test
+	public void getFileVoTest(){
+		/***Given***/
+		String fileId = "d:\\upload\\자유게시판\\2019\\06\\74a262e0-0f54-442c-983c-0aeefa3db8bb.png";
+
+		/***When***/
+		UploadFileVO fileVo = uploadFileDao.getFileVo(fileId);
+		logger.debug("fileVo : {}", fileVo);
+		/***Then***/
+		
+		
 	}
 
 }

@@ -54,4 +54,44 @@ public class UploadFileService implements IUploadFileService{
 		return uploadFileDao.getUploadFileList(notiId);
 	}
 
+	/**
+	* Method : getFileVo
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param fileId
+	* @return
+	* Method 설명 : 아이디에 해당하는 파일 vo가져오기
+	*/
+	@Override
+	public UploadFileVO getFileVo(String fileId) {
+		return uploadFileDao.getFileVo(fileId);
+	}
+	/**
+	* Method : dbDeleteFile
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param uploadFileList
+	* @return
+	* Method 설명 : 게시글 수정할때 DB에 있는 그전의 첨부파일 내역을 삭제한다.(실제 폴더에서 삭제되지는 않음)
+	*/
+	@Override
+	public int dbDeleteFile(List<UploadFileVO> uploadFileList) {
+		
+		SqlSession sqlSession = MybatisUtil.getSqlSession();
+		int deleteCntSum = 0;
+		for(UploadFileVO uploadFile : uploadFileList){
+			int deleteCnt = uploadFileDao.dbDeleteFile(sqlSession, uploadFile);
+			
+			deleteCntSum += deleteCnt;
+			
+			if (deleteCnt != 1) {
+				sqlSession.rollback();
+				break;
+			}
+		}
+		sqlSession.commit();
+		sqlSession.close();
+		return deleteCntSum;
+	}
+
 }
