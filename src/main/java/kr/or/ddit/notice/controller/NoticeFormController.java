@@ -105,7 +105,7 @@ public class NoticeFormController extends HttpServlet {
 		}
 		uploadFileService.insertUploadFile(uploadFileList);
 		PartUtil.uploadFileListClear();
-		response.sendRedirect(request.getContextPath() + "/main.jsp");
+		response.sendRedirect(request.getContextPath() + "/noticeDetail?notiId="+notiId);
 		
 	}
 

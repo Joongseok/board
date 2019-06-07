@@ -4,4 +4,50 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="noti_comment">
 	                    			
+<select id="commentAllCnt" resultType="int">
+	SELECT COUNT(*)
+	FROM NOTI_COMMENT
+</select>
+
+<select id="commentMaxId" resultType="int">
+	SELECT MAX(ID)
+	FROM NOTI_COMMENT
+</select>
+<select id="commentList" parameterType="int" resultType="noti_commentVo">
+	SELECT CNT.*
+	FROM NOTI_COMMENT CNT, NOTICE NT
+	WHERE CNT.NOTIID = #{notiId}
+	AND	  NT.NOTIID = #{notiId}
+</select>
+<insert id="insertComment" parameterType="noti_commentVo">
+	INSERT INTO NOTI_COMMENT
+	VALUES
+	(
+	 	 #{id}
+		,#{notiId}
+		,SYSDATE
+		,#{userId}
+		,#{content}
+		,'true' 
+	)
+</insert>             			
+<update id="deleteComment" parameterType="noti_commentVo">
+	UPDATE NOTI_COMMENT
+	SET  DEL_YN = #{del_yn}
+		,CONTENT = #{content}
+	WHERE ID = #{id}
+</update>
+
+<update id="deleteCmt" parameterType="noti_commentVo">
+	UPDATE NOTI_COMMENT
+	SET  DEL_YN = #{del_yn}
+		,CONTENT = #{content}
+	WHERE ID = #{id}
+</update>
+
+<select id="getCmt" parameterType="int" resultType="noti_commentVo">
+	SELECT *
+	FROM NOTI_COMMENT
+	WHERE ID = #{id}
+</select>
 </mapper>

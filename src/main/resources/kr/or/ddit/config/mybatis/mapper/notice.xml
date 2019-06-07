@@ -11,15 +11,14 @@
 		from
 		    (select a.*, rownum rn
 		    from
-		        (select nt.NOTIID, nt.PARENTID, lpad(' ', (level-1)*4) || nt.title title, level lv, nt.groupId, nt.reg_dt, nt.userId
+		        (select DISTINCT(nt.NOTIID) NOTIID, nt.PARENTID, lpad(' ', (level-1)*4) || nt.title title, level lv, nt.groupId, nt.reg_dt, nt.userId, nt.del_yn
 		        from notice nt, board bd
 		        where nt.id = #{id} and bd.id = #{id}
-		        and nt.del_yn = 'true'
 		        start with nt.PARENTID is null
 		        connect by prior nt.NOTIID = nt.PARENTID
 		        order siblings by nt.GROUPID desc, nt.notiid)a)b
-		where b.rn >= #{page}
-		and b.rn <=#{pageSize}
+		where b.rn >= (#{page} -1 ) * #{pageSize} +1
+		and b.rn <= ${page}* #{pageSize}
 	]]>
 </select>
 <select id="noticeMaxId" resultType="int">
@@ -57,6 +56,22 @@
 		,#{groupId}
 	)
 </insert>
+<!-- 답글 -->
+<insert id="replyNotice" parameterType="noticeVo">
+	INSERT INTO NOTICE
+	VALUES
+	(
+		 #{notiId}
+		,#{userId}
+		,#{title}
+		,#{content}
+		,SYSDATE
+		,#{parentId}
+		,#{id}
+		,'true'
+		,#{groupId}
+	)
+</insert>
 
 <!-- 해당 번호의 게시글 정보 -->
 <select id="getNotice" parameterType="int" resultType="noticeVo">
@@ -66,9 +81,16 @@
 </select>	
 
 <update id="updateNotice" parameterType="noticeVo">
-	UPDATE NOITICE
-	SET TITLE = #{title}
-		,CONTENT = #{content}
+	UPDATE NOTICE
+	SET   TITLE = #{title}
+		 ,CONTENT = #{content}
+	WHERE NOTIID = #{notiId}
+</update>
+
+<update id="deleteNotice" parameterType="noticeVo">
+	UPDATE NOTICE
+	SET   TITLE = #{title}
+		 ,DEL_YN = #{del_yn}
 	WHERE NOTIID = #{notiId}
 </update>
 </mapper>

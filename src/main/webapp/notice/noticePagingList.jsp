@@ -39,9 +39,13 @@
 			// 사용자 아이디를 #userId 값으로 설정해주고
 			var notiId = $(this).find(".idHidden").val();
 			$("#notiId").val(notiId);
+			var del_yn = $(this).find(".del_ynHidden").val();
+			$("#del_yn").val(del_yn);
 			
 			//#frm 을 이용하여 submit();
-			$("#frm").submit();
+			if( $("#del_yn").val() == "true"){
+				$("#frm").submit();
+			}
 		});
 	});
 
@@ -66,7 +70,7 @@
 						<!-- 사용자 상세 조회 : userId가 필요 -->
 						<form id="frm" action="${pageContext.request.contextPath}/noticeDetail" method="get">
 							<input type="hidden" id="notiId" name="notiId">
-						
+							<input type="hidden" id="del_yn" name="del_yn">
 						</form>
 						
 						<div class="table-responsive">
@@ -77,18 +81,20 @@
 									<th>작성자</th>
 									<th>작성일시</th>
 								</tr>
-								<c:forEach items="${noticeList}" var="notice">
+								<c:forEach items="${noticeList}" var="notice" >
 									<tr class="noticeTr">
 									<form>
 										<input type="hidden" class="idHidden" value="${notice.notiId}">
+										<input type="hidden" class="del_ynHidden" value="${notice.del_yn}">
 									</form>
-										<td class="notiId">${notice.groupId}</td>
+										<td class="notiId">${notice.rn}</td>
 										<td>
 										 	<c:choose>
 										 		<c:when test="${notice.lv > 1 }">
 										 			<c:forEach begin="1" end="${notice.lv }">
 										 				&nbsp;&nbsp;&nbsp;&nbsp;
 											 		</c:forEach>
+										 		┗▶
 											 		${notice.title}
 										 		</c:when>
 										 		<c:otherwise>

@@ -83,23 +83,41 @@ public class NoticeDaoTest {
 	* Method : insertNoticeTest
 	* 작성자 : PC25
 	* 변경이력 :
-	* Method 설명 : 게시글 작성 테스트
+	* Method 설명 : 게시글 삭제 테스트
 	*/
 	@Test
-	public void insertNoticeTest(){
+	public void deleteNoticeTest(){
 		/***Given***/
-		int notiId = noticeDao.noticeAllCnt() == 0 ? 1 : noticeDao.noticeAllCnt() + 1;
-		NoticeVO noticeVo = new NoticeVO(
-				notiId
-				, "brown"
-				, "테스트제목"
-				, "테스트내용"
-				, 1
-				);
-
+		String title = "삭제된 게시글입니다.";
+		String del_yn = "false";
+		int notiId = 10;
+		NoticeVO noticeVo = new NoticeVO();
+		noticeVo.setDel_yn(del_yn);
+		noticeVo.setTitle(title);
+		noticeVo.setNotiId(notiId);
 		/***When***/
-		int result = noticeDao.insertNotice(noticeVo);
+		int result = noticeDao.deleteNotice(noticeVo);
+		
 		/***Then***/
 		assertEquals(1, result);
+	}
+	
+	/**
+	* Method : getParentIdTest
+	* 작성자 : PC25
+	* 변경이력 :
+	* Method 설명 : DB에 ParentId가 NULL값일때 어떻게 받아오는지 확인하는 테스트
+	*/
+	@Test
+	public void getParentIdTest(){
+		/***Given***/
+		int notiId = 11;
+
+		/***When***/
+		NoticeVO noticeVo = noticeDao.getNotice(notiId);
+		logger.debug("parentId : {}", noticeVo.getParentId());
+		/***Then***/
+		
+		
 	}
 }

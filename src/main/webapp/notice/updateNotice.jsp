@@ -20,7 +20,6 @@
 <script>
 $(document).ready(function (){
 	
-	
 });
 
 </script>
@@ -46,7 +45,7 @@ $(document).ready(function (){
 						<h2 class="sub-header">게시글 수정</h2>
 							
 							
-						<form id="frm" class="form-horizontal" action="${pageContext.request.contextPath}/updateNotice?notiId=${noticeVo.notiId}" 
+						<form id="frm" class="form-horizontal" action="${pageContext.request.contextPath}/updateNotice" 
 						method="post" role="form"
 						enctype="multipart/form-data"
 						>

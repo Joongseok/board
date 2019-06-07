@@ -84,25 +84,23 @@ function validation(){
 </script>
 </head>
 <body>
-<form  action="${pageContext.request.contextPath}/updateNotice" method="post" id="frm" enctype="multipart/form-data">
+<form  action="${pageContext.request.contextPath}/replyNotice" method="post" id="frm" enctype="multipart/form-data">
 <div class="form-group">
 	<label for="title" class="col-sm-1 control-label">제목</label>
 	<div class="col-sm-10">
 <%-- 	<label class="control-label">${userVo.userId }</label> --%>
 		<input type="text" class="form-control" id="title"
-			name="title" value="${noticeVo.title}" placeholder="제목">
+			name="title" placeholder="제목">
 	</div>
 </div>
 
-	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;">${noticeVo.content }</textarea> 
+	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;"></textarea> 
+첨부파일 추가 : <img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
 <input type="file" name="file" id="file">
-<img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
 
 <input type="hidden" id="count" >
-<input type="hidden" name="id" value="${id }">
-<input type="hidden" name="notiId" value="${noticeVo.notiId}">
-
-<input type="button" class="col-sm-1 btn btn-default" id="savebutton" value="수정" />
+<input type="hidden" name="notiId" value="${notiId }">
+<input type="button" class="col-sm-1 btn btn-default" id="savebutton" value="등록" />
 </form>
 </body>
 </html>

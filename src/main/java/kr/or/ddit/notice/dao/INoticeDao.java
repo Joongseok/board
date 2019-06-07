@@ -73,4 +73,24 @@ public interface INoticeDao {
 	* Method 설명 : 게시글 수정
 	*/
 	int updateNotice(NoticeVO noticeVo);
+
+	/**
+	* Method : deleteNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param noticeVo
+	* @return
+	* Method 설명 : 게시글 삭제
+	*/
+	int deleteNotice(NoticeVO noticeVo);
+
+	/**
+	* Method : replyNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param createNoticeVo
+	* @return
+	* Method 설명 : 답글
+	*/
+	int replyNotice(NoticeVO createNoticeVo);
 }

@@ -13,6 +13,16 @@ public class Noti_commentVO {
 	public Noti_commentVO() {
 		// TODO Auto-generated constructor stub
 	}
+	
+
+	public Noti_commentVO(int id, int notiId, String userId, String content) {
+		super();
+		this.id = id;
+		this.notiId = notiId;
+		this.userId = userId;
+		this.content = content;
+	}
+
 
 	public Noti_commentVO(int id, int notiId, Date reg_dt, String userId,
 			String content, String del_yn) {

@@ -6,6 +6,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +27,12 @@
 <script>
 $("#content").val();
 $(document).ready(function (){
+	
+	$("#commentBtn").on("click", function (){
+		alert("commentBtn");
+		$("#commentForm").submit();
+		
+	})
 	
 	$(".fileLabel").on("click", function(){
 		alert("fileLable");
@@ -161,16 +168,42 @@ function dataInit(){
 <!-- 									<input type="file" id="file" -->
 <!-- 										name="modifyFile" class="btn btn-default" > -->
 <!-- 							</div> -->
-							
 							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<a href="${pageContext.request.contextPath }/updateNotice?notiId=${noticeVo.notiId}"><button id="updateBtn" type="button" class="btn btn-default">수정하기</button> </a>
-									<c:if test="${noticeVo.userId eq USER_INFO.userId }">
-									<a href="${pageContext.request.contextPath }/deleteNotice?notiId=${noticeVo.notiId}"><button id="updateBtn" type="button" class="btn btn-default">삭제하기</button> </a>
-									</c:if>
+								<label for="userId" class="col-sm-2 control-label">댓글</label>
+								<div class="col-sm-6">
+								<c:forEach items="${ntcList }" var="comment">
+									<label class="control-label">${comment.content} [${comment.userId }/ <fmt:formatDate value="${comment.reg_dt }" pattern="yyyy-MM-dd"/> ]</label>
+										
+										<c:if test="${comment.del_yn eq true}">
+										<a href="${pageContext.request.contextPath }/deleteComment?notiId=${noticeVo.notiId}&userId=${USER_INFO.userId}&id=${comment.id}">
+										<button  type="button" class="btn btn-default">댓글 삭제</button> </a>
+										</c:if>
+										<br>
+									</c:forEach>
 								</div>
 							</div>
-						</form>
+							</form>
+							<form id="commentForm"  class="form-horizontal" action="${pageContext.request.contextPath }/noti_comment" method="post">
+								<div class="form-group">
+									<label for="userId" class="col-sm-2 control-label"></label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" id="comment"
+											name="comment" placeholder="댓글">
+										<input type="hidden" name="cntNotiId" value="${noticeVo.notiId}">
+									</div>
+										<input id="commentBtn" type="button" class="btn btn-default" value="댓글저장">
+								</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<c:if test="${noticeVo.userId eq USER_INFO.userId }">
+										<a href="${pageContext.request.contextPath }/updateNotice?notiId=${noticeVo.notiId}"><button  type="button" class="btn btn-default">수정하기</button> </a>
+										<a href="${pageContext.request.contextPath }/deleteNotice?notiId=${noticeVo.notiId}"><button  type="button" class="btn btn-default">삭제하기</button> </a>
+									</c:if>
+										<a href="${pageContext.request.contextPath }/replyNotice?notiId=${noticeVo.notiId}"><button type="button" id="replyBtn" class="btn btn-default">답글</button> </a>
+								</div>
+							</div>
+							</form>
+						
 					</div>
 				</div>
 			</div>

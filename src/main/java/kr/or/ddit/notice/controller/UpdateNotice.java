@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import kr.or.ddit.uploadFile.service.UploadFileService;
 import kr.or.ddit.util.PartUtil;
 
 @WebServlet("/updateNotice")
+@MultipartConfig(maxFileSize=1024*1024*3, maxRequestSize=1024*1024*15)
 public class UpdateNotice extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -56,21 +58,29 @@ public class UpdateNotice extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("updateNotice doPost()");
+		request.setCharacterEncoding("UTF-8");
 		
 		String notiIdStr = request.getParameter("notiId");
 		String title = request.getParameter("title");
 		String content = request.getParameter("smarteditor");
+		logger.debug("notiIdStr : {}", notiIdStr);
+		logger.debug("title : {}", title);
+		logger.debug("content : {}", content);
 		
 		int notiId = Integer.parseInt(notiIdStr);
+		logger.debug("notiId : {}", notiId);
 		
 		List<UploadFileVO> dbUploadFileList = uploadFileService.getUploadFileList(notiId);
 		
 		uploadFileService.dbDeleteFile(dbUploadFileList);
 		
 		NoticeVO noticeVo = new NoticeVO(notiId, title, content);
+		NoticeVO originallyNoticeVo = noticeService.getNotice(notiId);
 		logger.debug("noticeVo : {}", noticeVo);
+		logger.debug("noticeVo.getId : {}", noticeVo.getId());
 		noticeService.updateNotice(noticeVo);
-		BoardVO boardVo = boardService.getBoard(noticeVo.getId());
+		BoardVO boardVo = boardService.getBoard(originallyNoticeVo.getId());
+		logger.debug("boardVo : {}", boardVo);
 		
 		Part file = request.getPart("file");
 		Part file2 = request.getPart("file2");
@@ -98,7 +108,7 @@ public class UpdateNotice extends HttpServlet {
 		}
 		uploadFileService.insertUploadFile(uploadFileList);
 		PartUtil.uploadFileListClear();
-		response.sendRedirect(request.getContextPath() + "/main.jsp");
+		response.sendRedirect(request.getContextPath() + "/noticeDetail?notiId="+notiId);
 	}
 
 }

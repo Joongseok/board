@@ -41,6 +41,7 @@ public class NoticeController extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("noticeController doGet()");
+//		String pageSizeStr = "10";
 		logger.debug("id : {}", request.getParameter("id"));
 		int id = Integer.parseInt(request.getParameter("id"));
 		
@@ -48,21 +49,42 @@ public class NoticeController extends HttpServlet {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String pageStr = request.getParameter("page");
 		String pageSizeStr = request.getParameter("pageSize");
+		logger.debug("pageStr: {}", pageStr);
+		logger.debug("pageSizeStr : {}", pageSizeStr);
 		
 		int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
 		int pageSize = pageSizeStr == null ? 10 : Integer.parseInt(pageSizeStr);
+		PageVO pageVo = new PageVO(page, pageSize);
+		logger.debug("page: {}", page);
+		logger.debug("pageSize : {}", pageSize);
+//		if (page >= 2) {
+//			// 첫페이지에 출력할 개수를
+//			int size = noticeService.noticeCnt(boardVo);
+//			float pageS= size/10f;
+//			
+//			pageSize = (int) Math.ceil(pageS%10);
+//			logger.debug("if pageSize : {}", pageSize);
+//		}else if(page == 1){
+//			pageSize = 10;
+//			logger.debug("else if pageSize : {}",pageSize);
+//		}
 		
 		map.put("id", id);
 		map.put("page", page);
 		map.put("pageSize", pageSize);
 		
+		int mapPage = (int) map.get("page");
+		int mapPageSize = (int) map.get("pageSize");
+		logger.debug("mapPage : {}", mapPage);
+		logger.debug("mapPageSize : {}", mapPageSize);
+		
 		Map<String, Object> resultMap = noticeService.noticeList(boardVo, map);
+		int paginationSize = (int) resultMap.get("paginationSize");
+		logger.debug("paginationSize : {}", paginationSize);
 		
 		List<NoticeVO> noticeList = (List<NoticeVO>) resultMap.get("noticeList");
-		int paginationSize = (int) resultMap.get("paginationSize");
 		
-		logger.debug("paginationSize : {}", paginationSize);
-		PageVO pageVo = new PageVO(page, pageSize);
+		// 페이지네이션 사이즈가 1보다 크면
 		
 		request.setAttribute("boardVo", boardVo);
 		request.setAttribute("pageVo", pageVo);

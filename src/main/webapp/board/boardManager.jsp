@@ -29,7 +29,7 @@ $(document).ready(function () {
 	}
 	
 	$("#createClick").on("click", function (){
-		if($("#user_info").val() == ""){
+		if($("#user_info").val() == "" || $("#user_info").val() == null){
 			alert("로그인을 먼저 해주세요");
 			return;
 		}
@@ -45,7 +45,7 @@ $(document).ready(function () {
 		}
 	})
 	$('#create_use_yn').change(function() {
-		if($("#user_info").val() == ""){
+		if($("#user_info").val() == "" || $("#user_info").val() == null){
 			alert("로그인을 먼저 해주세요");
 			return;
 		}
@@ -56,7 +56,7 @@ $(document).ready(function () {
 	    $("#use_yn").val(option);
 	});
 	$('.update_use_yn').change(function() {
-		if($("#user_info").val() == ""){
+		if($("#user_info").val() == "" || $("#user_info").val() == null){
 			alert("로그인을 먼저 해주세요");
 			return;
 		}
@@ -70,7 +70,7 @@ $(document).ready(function () {
 	});
 	
 	$(":submit").on("click", function (){
-		if($("#user_info").val() == ""){
+		if($("#user_info").val() == "" || $("#user_info").val() == null){
 			alert("로그인을 먼저 해주세요");
 			return;
 		}

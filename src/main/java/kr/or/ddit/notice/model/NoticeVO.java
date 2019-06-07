@@ -14,8 +14,7 @@ public class NoticeVO {
 	private String del_yn;  //삭제여부
 	private int rn; // 삭제여부에 따른 게시글의 번호
 	private int groupId; // 최상위 부모 컬럼 번호
-	private int lv; // 최상위 부모 컬럼 번호
-	
+	private int lv; 
 	
 	
 	
@@ -71,6 +70,17 @@ public class NoticeVO {
 		this.notiId = notiId;
 		this.title = title;
 		this.content = content;
+	}
+
+	public NoticeVO(int createNotiId, String userId, String title,
+			String content, int parentId, int id, int groupId) {
+		this.notiId = createNotiId;
+		this.userId = userId;
+		this.title = title;
+		this.content = content;
+		this.parentId = parentId;
+		this.id = id;
+		this.groupId = groupId;
 	}
 
 	public int getNotiId() {

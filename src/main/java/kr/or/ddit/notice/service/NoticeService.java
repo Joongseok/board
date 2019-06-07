@@ -29,6 +29,7 @@ public class NoticeService implements INoticeService {
 		List<NoticeVO> noticeList = noticeDao.noticeList(map);
 		int noticeCnt = noticeDao.noticeCnt(boardVo);
 		int pageSize = (int) map.get("pageSize");
+		int division = 10;
 		int paginationSize = (int) Math.ceil((double)noticeCnt/pageSize);
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -107,6 +108,22 @@ public class NoticeService implements INoticeService {
 	@Override
 	public int updateNotice(NoticeVO noticeVo) {
 		return noticeDao.updateNotice(noticeVo);
+	}
+	/**
+	* Method : deleteNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param noticeVo
+	* @return
+	* Method 설명 : 게시글 삭제
+	*/
+	@Override
+	public int deleteNotice(NoticeVO noticeVo) {
+		return noticeDao.deleteNotice(noticeVo);
+	}
+	@Override
+	public int replyNotice(NoticeVO createNoticeVo) {
+		return noticeDao.replyNotice(createNoticeVo);
 	}
 
 }

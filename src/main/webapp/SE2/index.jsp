@@ -81,7 +81,6 @@ function validation(){
 
 	return true;
 }
-
 </script>
 </head>
 <body>
@@ -97,7 +96,7 @@ function validation(){
 
 	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;"></textarea> 
 <input type="file" name="file" id="file">
-<img alt="" id="pp" src="${pageContext.request.contextPath }/img/sally.png">
+<img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
 
 <input type="hidden" id="count" >
 <input type="hidden" name="id" value="${id }">

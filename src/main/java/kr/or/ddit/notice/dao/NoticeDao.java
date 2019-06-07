@@ -115,11 +115,35 @@ public class NoticeDao implements INoticeDao {
 	*/
 	@Override
 	public int updateNotice(NoticeVO noticeVo) {
-		SqlSession sqlSession =MybatisUtil.getSqlSession();
+		SqlSession sqlSession = MybatisUtil.getSqlSession();
 		int updateNotice = sqlSession.update("notice.updateNotice", noticeVo);
 		sqlSession.commit();
 		sqlSession.close();
 		return updateNotice;
+	}
+	/**
+	* Method : deleteNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param noticeVo
+	* @return
+	* Method 설명 : 게시글 삭제
+	*/
+	@Override
+	public int deleteNotice(NoticeVO noticeVo) {
+		SqlSession sqlSession = MybatisUtil.getSqlSession();
+		int deleteNotice = sqlSession.delete("notice.deleteNotice", noticeVo);
+		sqlSession.commit();
+		sqlSession.close();
+		return deleteNotice;
+	}
+	@Override
+	public int replyNotice(NoticeVO createNoticeVo) {
+		SqlSession sqlSession = MybatisUtil.getSqlSession();
+		int createNotice = sqlSession.insert("notice.replyNotice", createNoticeVo);
+		sqlSession.commit();
+		sqlSession.close();
+		return createNotice;
 	}
 
 }
