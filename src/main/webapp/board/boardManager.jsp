@@ -112,20 +112,28 @@ $(document).ready(function () {
 										<tr class="updateTr">
 											<td>${board.name }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 											<td>${board.userId }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-											<td><fmt:formatDate value="${board.reg_dt }" pattern="yyyy-MM-dd"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-											<c:choose>
-												<c:when test="${board.use_yn eq 'true' }">
-													<td> 사용</td>
-												</c:when>
-												<c:otherwise>
-													<td> 미사용</td>
-												</c:otherwise>
-											</c:choose>
+											<td><fmt:formatDate value="${board.reg_dt }" pattern="yyyy-MM-dd"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<%-- 											<c:choose> --%>
+<%-- 												<c:when test="${board.use_yn eq 'true' }"> --%>
+<!-- 													<td> 사용</td> -->
+<%-- 												</c:when> --%>
+<%-- 												<c:otherwise> --%>
+<!-- 													<td> 미사용</td> -->
+<%-- 												</c:otherwise> --%>
+<%-- 											</c:choose> --%>
 											<td class="updateTd">
 												<form class="navbar-form navbar-right" class="updateBoard" action="${pageContext.request.contextPath }/updateBoard" method="post">
 													<select class="update_use_yn">
-													  <option value="true">사용</option>
-													  <option value="false">미사용</option>
+													<c:choose>
+														<c:when test="${board.use_yn eq 'true' }">
+															  <option value="true" selected="selected">사용</option>
+															  <option value="false">미사용</option>
+														  </c:when>
+														  <c:otherwise>
+														   <option value="true" >사용</option>
+															  <option value="false" selected="selected">미사용</option>
+														  </c:otherwise>
+													  </c:choose>
 													</select>
 													<input type="hidden" class="updateUse_yn" name="updateUse_yn">
 													<input type="hidden" name="id" value="${board.id }">
