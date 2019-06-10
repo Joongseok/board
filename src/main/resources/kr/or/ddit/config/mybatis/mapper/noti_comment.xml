@@ -3,22 +3,28 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="noti_comment">
-	                    			
+
+<!-- 전체 댓글 수 -->	                    			
 <select id="commentAllCnt" resultType="int">
 	SELECT COUNT(*)
 	FROM NOTI_COMMENT
 </select>
 
+<!-- 댓글 마지막 번호 + 1 -->
 <select id="commentMaxId" resultType="int">
-	SELECT MAX(ID)
+	SELECT MAX(ID) +1
 	FROM NOTI_COMMENT
 </select>
+
+<!-- 해당 게시글의 댓글 리스트 -->
 <select id="commentList" parameterType="int" resultType="noti_commentVo">
 	SELECT CNT.*
 	FROM NOTI_COMMENT CNT, NOTICE NT
 	WHERE CNT.NOTIID = #{notiId}
 	AND	  NT.NOTIID = #{notiId}
 </select>
+
+<!-- 댓글 작성 -->
 <insert id="insertComment" parameterType="noti_commentVo">
 	INSERT INTO NOTI_COMMENT
 	VALUES
@@ -30,24 +36,23 @@
 		,#{content}
 		,'true' 
 	)
-</insert>             			
-<update id="deleteComment" parameterType="noti_commentVo">
+</insert>   
+          	
+<!-- 해당 게시글이 삭제될때 댓글 casecade -->		
+<update id="deleteComment" parameterType="int">
 	UPDATE NOTI_COMMENT
-	SET  DEL_YN = #{del_yn}
-		,CONTENT = #{content}
+	SET  DEL_YN = 'false'
+		,CONTENT = '삭제된 댓글입니다.'
 	WHERE ID = #{id}
 </update>
 
-<update id="deleteCmt" parameterType="noti_commentVo">
+
+<!-- 하나의 댓글 삭제 -->
+<update id="deleteCmt" parameterType="int">
 	UPDATE NOTI_COMMENT
-	SET  DEL_YN = #{del_yn}
-		,CONTENT = #{content}
+	SET  DEL_YN = 'false'
+		,CONTENT = '삭제된 댓글입니다.'
 	WHERE ID = #{id}
 </update>
 
-<select id="getCmt" parameterType="int" resultType="noti_commentVo">
-	SELECT *
-	FROM NOTI_COMMENT
-	WHERE ID = #{id}
-</select>
 </mapper>

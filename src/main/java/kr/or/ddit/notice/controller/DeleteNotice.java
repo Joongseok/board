@@ -16,16 +16,10 @@ import kr.or.ddit.notice.model.NoticeVO;
 import kr.or.ddit.notice.service.INoticeService;
 import kr.or.ddit.notice.service.NoticeService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @WebServlet("/deleteNotice")
 public class DeleteNotice extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DeleteNotice.class);
-	
 	private INoticeService noticeService;
 	private INoti_CommentService ntcService;
 	
@@ -36,35 +30,25 @@ public class DeleteNotice extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("delteNotice doGet()");
-		
 		String notiIdStr = request.getParameter("notiId");
+		
+		// 게시글 번호
 		int notiId = Integer.parseInt(notiIdStr);
-		String del_yn = "false";
 		
-		String title = "삭제된 게시글입니다.";
-		
-		
-		NoticeVO noticeVo = new NoticeVO();
-		
-		noticeVo.setNotiId(notiId);
-		
+		// 게시글 번호에 해당하는 게시글 정보
 		NoticeVO ntVo = noticeService.getNotice(notiId);
-		noticeVo.setTitle(title);
-		noticeVo.setDel_yn(del_yn);
 		
+		// 게시글 번호에 해당하는 댓글리스트
 		List<Noti_commentVO> ntcList = ntcService.commentList(notiId);
 		
+		// 댓글리스트 삭제
 		ntcService.deleteComment(ntcList);
 		
-		noticeService.deleteNotice(noticeVo);
+		// 게시글 삭제
+		noticeService.deleteNotice(notiId);
 		
+		// 해당 게시글이 있던 게시판리스트로 돌아감
 		response.sendRedirect(request.getContextPath() + "/noticeController?id="+ntVo.getId());
-		
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 	}
 
 }

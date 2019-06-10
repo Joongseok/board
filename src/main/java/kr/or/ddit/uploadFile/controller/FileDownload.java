@@ -11,15 +11,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 import kr.or.ddit.uploadFile.model.UploadFileVO;
 import kr.or.ddit.uploadFile.service.IUploadFileService;
 import kr.or.ddit.uploadFile.service.UploadFileService;
-import kr.or.ddit.util.PartUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @WebServlet("/fileDownload")
 @MultipartConfig(maxFileSize=1024*1024*3, maxRequestSize=1024*1024*15)
@@ -32,27 +27,30 @@ public class FileDownload extends HttpServlet {
 	public void init() throws ServletException {
 		fileService = new UploadFileService();
 	}
-	
-	private static final Logger logger = LoggerFactory
-			.getLogger(FileDownload.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
-		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		// 인코딩
 		request.setCharacterEncoding("UTF-8");
-		logger.debug("fileDownload doPost()");
 	
+		// 다운로드할 첨부파일 아이디
 		String fileId = request.getParameter("fileId");
+		
+		// 아이디에 맞는 정보를 담은 첨부파일 객체
 		UploadFileVO fileVo = fileService.getFileVo(fileId);
+		
+		// 첨부파일 이름
 		String fileName = fileVo.getFileName();
-		logger.debug("fileVo : {}", fileVo);
 		
 		response.setContentType("application/octet-stream");
+		
+		// 다운로드할 첨부파일 이름 설정
 		response.setHeader("Content-Disposition", "attachment;filename="+fileName);
 		
+		// 파일 객체 생성
 		File file = new File(fileId);
 		FileInputStream fileInputStream = new FileInputStream(file);
 		ServletOutputStream servletOutputStream = response.getOutputStream();
@@ -67,7 +65,5 @@ public class FileDownload extends HttpServlet {
 		servletOutputStream.flush();
 		servletOutputStream.close();
 		fileInputStream.close();
-				
 	}
-
 }

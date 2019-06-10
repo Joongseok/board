@@ -11,91 +11,55 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.or.ddit.board.model.BoardVO;
-import kr.or.ddit.board.service.BoardService;
-import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.notice.model.NoticeVO;
 import kr.or.ddit.notice.service.INoticeService;
 import kr.or.ddit.notice.service.NoticeService;
-import kr.or.ddit.paging.model.PageVO;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @WebServlet("/noticeController")
 public class NoticeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-	private static final Logger logger = LoggerFactory
-			.getLogger(NoticeController.class);
-
 	
 	private INoticeService noticeService;
-	private IBoardService boardService;
 	
 	@Override
 	public void init() throws ServletException {
 		noticeService = new NoticeService();
-		boardService = new BoardService();
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("noticeController doGet()");
-//		String pageSizeStr = "10";
-		logger.debug("id : {}", request.getParameter("id"));
-		int id = Integer.parseInt(request.getParameter("id"));
+
+		// 해당 게시판의 번호
+		int id = Integer.parseInt(request.getParameter("id")); 
 		
-		BoardVO boardVo = boardService.getBoard(id);
-		Map<String, Object> map = new HashMap<String, Object>();
-		String pageStr = request.getParameter("page");
-		String pageSizeStr = request.getParameter("pageSize");
-		logger.debug("pageStr: {}", pageStr);
-		logger.debug("pageSizeStr : {}", pageSizeStr);
+		String pageStr = request.getParameter("page"); 
+		String pageSizeStr = request.getParameter("pageSize"); 
 		
+		// 해당 페이지
 		int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
+		
+		// 해당 페이지에 출력할 게시글 수
 		int pageSize = pageSizeStr == null ? 10 : Integer.parseInt(pageSizeStr);
-		PageVO pageVo = new PageVO(page, pageSize);
-		logger.debug("page: {}", page);
-		logger.debug("pageSize : {}", pageSize);
-//		if (page >= 2) {
-//			// 첫페이지에 출력할 개수를
-//			int size = noticeService.noticeCnt(boardVo);
-//			float pageS= size/10f;
-//			
-//			pageSize = (int) Math.ceil(pageS%10);
-//			logger.debug("if pageSize : {}", pageSize);
-//		}else if(page == 1){
-//			pageSize = 10;
-//			logger.debug("else if pageSize : {}",pageSize);
-//		}
 		
-		map.put("id", id);
-		map.put("page", page);
-		map.put("pageSize", pageSize);
+		// Map 객체에 게시판 번호, 페이지, 출력할 게시글 수를 넣는다.
+		Map<String, Object> pageMap = new HashMap<String, Object>();
+		pageMap.put("id", id);
+		pageMap.put("page", page);
+		pageMap.put("pageSize", pageSize);
 		
-		int mapPage = (int) map.get("page");
-		int mapPageSize = (int) map.get("pageSize");
-		logger.debug("mapPage : {}", mapPage);
-		logger.debug("mapPageSize : {}", mapPageSize);
-		
-		Map<String, Object> resultMap = noticeService.noticeList(boardVo, map);
+		// 페이징처리한 리스트와 페이지의 수를 구함
+		Map<String, Object> resultMap = noticeService.noticePagingList(pageMap);
 		int paginationSize = (int) resultMap.get("paginationSize");
-		logger.debug("paginationSize : {}", paginationSize);
-		
+		if (paginationSize == 0) {
+			paginationSize = 1;
+		}
 		List<NoticeVO> noticeList = (List<NoticeVO>) resultMap.get("noticeList");
 		
-		// 페이지네이션 사이즈가 1보다 크면
-		
-		request.setAttribute("boardVo", boardVo);
-		request.setAttribute("pageVo", pageVo);
+		request.setAttribute("pageMap", pageMap);
 		request.setAttribute("noticeList", noticeList);
 		request.setAttribute("paginationSize", paginationSize);
-		request.getRequestDispatcher("/notice/noticePagingList.jsp").forward(request, response);
 		
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		// 게시글 페이징 리스트로 이동
+		request.getRequestDispatcher("/notice/noticePagingList.jsp").forward(request, response);
 	}
 
 }

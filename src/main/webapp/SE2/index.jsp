@@ -10,14 +10,7 @@
 <%@include file="/common/basicLib.jsp" %>
 <!-- Favicon -->
 <link rel="shortcut icon" href="favicon.ico" />
-
-<!-- jQuery -->
-<!-- <script type="text/javascript" src="/js/jquery.js"></script>
-<script type="text/javascript" src="/js/jquery-ui.min.js"></script>-->
-
-<!-- <script type="text/javascript" src="/js/jquery/jquery-3.2.1.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
 
 <script src="${pageContext.request.contextPath }/SE2/js/HuskyEZCreator.js"></script>
 <script type="text/javascript">
@@ -52,7 +45,7 @@ $(document).ready(function() {
 			}
 		}
 	})
-	count = parseInt(2);
+	var count = parseInt(2);
 	$("#count").val(count);
 	$("#pp").on("click", function (){
 		
@@ -60,13 +53,12 @@ $(document).ready(function() {
 			alert("파일은 다섯개까지만 첨부하실수 있습니다.")
 			return;
 		}
-// 		$(":file").append("<p>gd </p>");
-		$('<input type="file" id="file2" name="file">').insertAfter("#file");
-		$("#file2").attr("name", "file" + count);
-		$("#file2").attr("id", "file" + count);
+		$('<input type="file" name="files">').insertAfter("#file");
 		count +=parseInt(1);
 		$("#count").val(count);
 	});
+	
+	
 	
 });
 
@@ -85,22 +77,22 @@ function validation(){
 </head>
 <body>
 <form  action="${pageContext.request.contextPath}/noticeForm" method="post" id="frm" enctype="multipart/form-data">
-<div class="form-group">
-	<label for="title" class="col-sm-1 control-label">제목</label>
-	<div class="col-sm-10">
-<%-- 	<label class="control-label">${userVo.userId }</label> --%>
-		<input type="text" class="form-control" id="title"
-			name="title" value="${param.userId}" placeholder="제목">
+	<div class="form-group">
+		<label for="title" class="col-sm-1 control-label">제목</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="title"
+				name="title" value="${param.userId}" placeholder="제목">
+		</div>
 	</div>
-</div>
-
+	
 	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;"></textarea> 
-<input type="file" name="file" id="file">
-<img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
-
-<input type="hidden" id="count" >
-<input type="hidden" name="id" value="${id }">
-<input type="button" class="col-sm-1 btn btn-default" id="savebutton" value="등록" />
+	<input type="file" name="files" id="file">
+	<img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
+	
+	<input type="hidden" id="count" >
+	<input type="hidden" name="id" value="${id }">
+	<input type="hidden" id="userId" value="${USER_INFO.userId}">
+	<input type="button" class="col-sm-1 btn btn-default" id="savebutton" value="등록" />
 </form>
 </body>
 </html>

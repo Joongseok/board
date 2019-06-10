@@ -1,14 +1,10 @@
 package kr.or.ddit.notice.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,17 +24,11 @@ import kr.or.ddit.uploadFile.service.UploadFileService;
 import kr.or.ddit.user.model.UserVO;
 import kr.or.ddit.util.PartUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @WebServlet("/noticeForm")
 @MultipartConfig(maxFileSize=1024*1024*3, maxRequestSize=1024*1024*15)
 public class NoticeFormController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private static final Logger logger = LoggerFactory
-			.getLogger(NoticeFormController.class);
-	
 	private IBoardService boardService;
 	private IUploadFileService uploadFileService;
 	private INoticeService noticeService;
@@ -51,60 +41,56 @@ public class NoticeFormController extends HttpServlet {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("noticeFormController doGet()");
 		
+		// 게시판 번호
 		request.setAttribute("id", request.getParameter("id"));
-		logger.debug("notiForm doGet() boardVo.id : {}", request.getParameter("id"));
+		
+		// 게시판 번호를 가지고 게시글 작성화면으로 이동
 		request.getRequestDispatcher("/notice/noticeForm.jsp").forward(request, response);
 	}
-
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//한글 인코딩을 위한 UTF-8 설정
-		logger.debug("noticeFormController doPost()");
+		
+		// 인코딩
 		request.setCharacterEncoding("utf-8");
 		
+		// 게시판 번호
 		int id = Integer.parseInt(request.getParameter("id"));
-		BoardVO boardVo = boardService.getBoard(id);
 		
+		// 작성자
 		String userId = ((UserVO)request.getSession().getAttribute("USER_INFO")).getUserId();
-		logger.debug("notiForm doPost() boardVo  : {} ", boardVo);
 		
-		String title = request.getParameter("title"); // 제목
-		String content = request.getParameter("smarteditor"); //내용
-		logger.debug("title : {}", title);
-		logger.debug("content : {}", content);
-		int notiId = noticeService.noticeAllCnt() == 0 ? 1 : noticeService.noticeMaxId() + 1;
+		// 제목
+		String title = request.getParameter("title"); 
+		
+		// 게시글 내용
+		String content = request.getParameter("smarteditor"); 
+		
+		// 게시글 번호
+		int notiId = noticeService.noticeAllCnt() == 0 ? 1 : noticeService.noticeMaxId();
+		
 		NoticeVO noticeVo = new NoticeVO(notiId, userId, title, content, id, notiId);
-		logger.debug("noticeVo : {}", noticeVo);
+		
+		// 게시글 작성
 		noticeService.insertNotice(noticeVo);
 		
-		Part file = request.getPart("file");
-		Part file2 = request.getPart("file2");
-		Part file3 = request.getPart("file3");
-		Part file4 = request.getPart("file4");
-		Part file5 = request.getPart("file5");
-		
-		if (file != null && file.getSize() > 0 ) {
-			PartUtil.uploadFile(file, boardVo , notiId);
-		} if(file2 != null && file2.getSize() > 0 ){
-			PartUtil.uploadFile(file2, boardVo , notiId);
-			
-		} if(file3 != null && file3.getSize() > 0 ){
-			PartUtil.uploadFile(file3, boardVo , notiId);
-			
-		} if(file4 != null && file4.getSize() > 0 ){
-			PartUtil.uploadFile(file4, boardVo , notiId);
-			
-		}if(file5 != null && file5.getSize() > 0 ){
-			PartUtil.uploadFile(file5, boardVo , notiId);
+		// 첨부파일 리스트
+		List<Part> partList = new ArrayList<Part>();
+		for(Part file : request.getParts()){
+			if ("files".equals(file.getName()) && file.getSize() > 0) {
+				partList.add(file);
+			}
 		}
+
+		BoardVO boardVo = boardService.getBoard(id);
+		PartUtil.uploadFile(partList, boardVo, notiId);
 		List<UploadFileVO> uploadFileList = PartUtil.uploadFileList();
-		for(UploadFileVO fileVo : uploadFileList){
-			logger.debug("uploadFileId : {}", fileVo.getFileId());
-		}
+		
+		// 첨부파일 insert
 		uploadFileService.insertUploadFile(uploadFileList);
 		PartUtil.uploadFileListClear();
+		
+		// 작성한 게시글로 이동
 		response.sendRedirect(request.getContextPath() + "/noticeDetail?notiId="+notiId);
 		
 	}

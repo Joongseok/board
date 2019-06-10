@@ -49,24 +49,35 @@ public class Noti_CommentService implements INoti_CommentService{
 	public int insertComment(Noti_commentVO ntcVo) {
 		return ntcDao.insertComment(ntcVo);
 	}
+	
+	/**
+	* Method : commentList
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param notiId
+	* @return
+	* Method 설명 : 해당 게시글의 댓글 리스트
+	*/
 	@Override
 	public List<Noti_commentVO> commentList(int notiId) {
 		return ntcDao.commentList(notiId);
 	}
+	/**
+	* Method : deleteComment
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param ntcList
+	* @return
+	* Method 설명 : 해당 게시글 이 삭제되면 댓글도 전부 cascade
+	*/
 	@Override
 	public int deleteComment(List<Noti_commentVO> ntcList) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
-		String del_yn = "false";
-		String comment = "삭제된 댓글입니다.";
 		int deleteCntSum = 0;
 		
 		for(Noti_commentVO ntcVo : ntcList){
-			ntcVo.setContent(comment);
-			ntcVo.setDel_yn(del_yn);
-			int deleteCnt = ntcDao.deleteComment(sqlSession, ntcVo);
-			
+			int deleteCnt = ntcDao.deleteComment(sqlSession, ntcVo.getId());
 			deleteCntSum += deleteCnt;
-			
 			if (deleteCnt != 1) {
 				sqlSession.rollback();
 				break;
@@ -76,13 +87,18 @@ public class Noti_CommentService implements INoti_CommentService{
 		sqlSession.close();
 		return deleteCntSum;
 	}
+	
+	/**
+	* Method : deleteCmt
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param ntcId
+	* @return
+	* Method 설명 : ID에 해당하는 한개의 댓글 삭제
+	*/
 	@Override
-	public int deleteCmt(Noti_commentVO ntcVo) {
-		return ntcDao.deleteCmt(ntcVo);
-	}
-	@Override
-	public Noti_commentVO getCmt(int id) {
-		return ntcDao.getCmt(id);
+	public int deleteCmt(int ntcId) {
+		return ntcDao.deleteCmt(ntcId);
 	}
 
 }

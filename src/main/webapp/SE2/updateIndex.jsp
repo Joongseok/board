@@ -3,6 +3,7 @@
 	* 파일명 : /page/test/index.jsp
 --------------------------------------------------------------------------------%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -10,19 +11,13 @@
 <%@include file="/common/basicLib.jsp" %>
 <!-- Favicon -->
 <link rel="shortcut icon" href="favicon.ico" />
-
-<!-- jQuery -->
-<!-- <script type="text/javascript" src="/js/jquery.js"></script>
-<script type="text/javascript" src="/js/jquery-ui.min.js"></script>-->
-
-<!-- <script type="text/javascript" src="/js/jquery/jquery-3.2.1.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
 
 <script src="${pageContext.request.contextPath }/SE2/js/HuskyEZCreator.js"></script>
 <script type="text/javascript">
 var oEditors = []; // 개발되어 있는 소스에 맞추느라, 전역변수로 사용하였지만, 지역변수로 사용해도 전혀 무관 함.
-
+cnt = 1;
+count = parseInt(1);
 $(document).ready(function() {
 	// Editor Setting
 	nhn.husky.EZCreator.createInIFrame({
@@ -52,18 +47,30 @@ $(document).ready(function() {
 			}
 		}
 	})
-	count = parseInt(2);
+	
 	$("#count").val(count);
 	$("#pp").on("click", function (){
 		
-		if($("#count").val() == 6){
+		if($("#count").val() >= 6){
 			alert("파일은 다섯개까지만 첨부하실수 있습니다.")
 			return;
 		}
-// 		$(":file").append("<p>gd </p>");
-		$('<input type="file" id="file2" name="file">').insertAfter("#file");
-		$("#file2").attr("name", "file" + count);
-		$("#file2").attr("id", "file" + count);
+		$('<input type="file" " name="files">').insertAfter("#pp");
+		count +=parseInt(1);
+		$("#count").val(count);
+	});
+	
+	$(".mm").on("click", function (){
+
+		if($(this).prev().text() != ""){
+			alert($(this).prev().remove())
+			$(this).prev().attr("name", "deleteFileId"+cnt);
+			cnt += 1;
+		}
+		if($(this).prev().html() == ""){
+			$(this).css("display", "none");
+		}
+		$('<input type="file" name="files">').insertAfter("#pp");
 		count +=parseInt(1);
 		$("#count").val(count);
 	});
@@ -95,10 +102,27 @@ function validation(){
 </div>
 
 	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;">${noticeVo.content }</textarea> 
-<input type="file" name="file" id="file">
+<!-- <input type="file" name="file" id="file"> -->
+<div class="form-group">
+	<label for="userId" class="col-sm-2 control-label">첨부파일</label>		
+		<div class="col-sm-8">
+		<c:forEach items="${fileList}" var="file">
+				<input type="hidden" class="hiddenFile" name="fileId" value="${file.fileId}">
+			<label id="fileLabel">${file.fileName }</label>
+			<img alt="" class="mm" src="${pageContext.request.contextPath }/img/minus.png">
+			<br>
+			<script>count +=1;</script>
+		</c:forEach>
+		</div>
+</div>
+
 <img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
 
 <input type="hidden" id="count" >
+			<script>
+			
+			$("#count").val(count);
+			</script>
 <input type="hidden" name="id" value="${id }">
 <input type="hidden" name="notiId" value="${noticeVo.notiId}">
 

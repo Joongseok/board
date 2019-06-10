@@ -19,7 +19,7 @@ import kr.or.ddit.uploadFile.service.UploadFileService;
 
 public class PartUtil {
 	private static final String UPLOAD_PATH = "d:"+ File.separator +"upload"+ File.separator;
-	
+	static List<UploadFileVO> uploadFileList = new ArrayList<UploadFileVO>();
 	/**
 	* Method : getFileNameTest
 	* 작성자 : PC25
@@ -69,7 +69,6 @@ public class PartUtil {
 		String mm = yyyyMM.substring(4, 6);
 		
 		String sp = File.separator;
-		// 게시글에 해당하는 폴더를 만들어야함
 		File boardNameFolder = new File(UPLOAD_PATH + boardName);
 		if (!boardNameFolder.exists()) {
 			boardNameFolder.mkdir();
@@ -95,7 +94,7 @@ public class PartUtil {
 		return resultMap;
 	}
 	
-	static List<UploadFileVO> uploadFileList = new ArrayList<UploadFileVO>();
+	
 	/**
 	* Method : uploadFile
 	* 작성자 : PC25
@@ -104,25 +103,30 @@ public class PartUtil {
 	* Method 설명 : 파일의 개수에 따라서 업로드 처리를 하는 메서드
 	 * @throws IOException 
 	*/
-	public static void uploadFile(Part file, BoardVO boardVo, int notiId) throws IOException {
-			String contentDisposition = file.getHeader("content-disposition");
-			String fileName = PartUtil.getFileName(contentDisposition);
-			String ext = PartUtil.getExt(fileName);
-			String sp = File.separator;
+	public static void uploadFile(List<Part> partList, BoardVO boardVo, int notiId) throws IOException {
+		
+		for(Part file : partList){
+			if (file != null && file.getSize() > 0 ) {
+				String contentDisposition = file.getHeader("content-disposition");
+				String fileName = PartUtil.getFileName(contentDisposition);
+				String ext = PartUtil.getExt(fileName);
+				
+				Map<String, Object> resultMap = PartUtil.setMkdir(boardVo.getName());
+				File uploadFolder = (File) resultMap.get("uploadFolder");
+				String uploadPath = (String) resultMap.get("uploadPath");
+				
+				if (uploadFolder.exists()) {
+					String filePath = uploadPath + UUID.randomUUID().toString() + ext; 
+					String fileId = filePath;
+					String path = uploadPath;
+					UploadFileVO uploadFile = new UploadFileVO(fileId, notiId, path, fileName);
+					uploadFileList.add(uploadFile);
+					file.write(filePath);
+					file.delete();
+				}
+			} 
 			
-			Map<String, Object> resultMap = PartUtil.setMkdir(boardVo.getName());
-			File uploadFolder = (File) resultMap.get("uploadFolder");
-			String uploadPath = (String) resultMap.get("uploadPath");
-			
-			if (uploadFolder.exists()) {
-				String filePath = uploadPath + UUID.randomUUID().toString() + ext; 
-				String fileId = filePath;
-				String path = uploadPath;
-				UploadFileVO uploadFile = new UploadFileVO(fileId, notiId, path, fileName);
-				uploadFileList.add(uploadFile);
-				file.write(filePath);
-				file.delete();
-			}
+		}
 	}
 	
 	public static List<UploadFileVO> uploadFileList(){

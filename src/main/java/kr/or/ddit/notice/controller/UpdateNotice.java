@@ -1,6 +1,7 @@
 package kr.or.ddit.notice.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,9 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import kr.or.ddit.board.model.BoardVO;
 import kr.or.ddit.board.service.BoardService;
@@ -33,8 +31,6 @@ public class UpdateNotice extends HttpServlet {
 	private INoticeService noticeService;
 	private IUploadFileService uploadFileService;
 	private IBoardService boardService;
-	private static final Logger logger = LoggerFactory
-			.getLogger(UpdateNotice.class);
 	
 	@Override
 	public void init() throws ServletException {
@@ -44,70 +40,86 @@ public class UpdateNotice extends HttpServlet {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("updateNotice doGet()");
-		
 		String notiIdStr = request.getParameter("notiId");
+	
+		// 수정할 게시글 번호
 		int notiId = Integer.parseInt(notiIdStr);
 		
+		// 수정할 게시글의 정보
 		NoticeVO noticeVo = noticeService.getNotice(notiId);
 		
+		// 게시글의 첨부파일 리스트
+		List<UploadFileVO> fileList =  uploadFileService.getUploadFileList(notiId);
+		
 		request.setAttribute("noticeVo", noticeVo);
+		request.setAttribute("fileList", fileList);
+		
+		// 게시글 수정 화면으로 이동
 		request.getRequestDispatcher("/notice/updateNotice.jsp").forward(request, response);
 		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("updateNotice doPost()");
+		
+		// 인코딩
 		request.setCharacterEncoding("UTF-8");
 		
 		String notiIdStr = request.getParameter("notiId");
-		String title = request.getParameter("title");
-		String content = request.getParameter("smarteditor");
-		logger.debug("notiIdStr : {}", notiIdStr);
-		logger.debug("title : {}", title);
-		logger.debug("content : {}", content);
 		
+		// 게시글 번호
 		int notiId = Integer.parseInt(notiIdStr);
-		logger.debug("notiId : {}", notiId);
 		
-		List<UploadFileVO> dbUploadFileList = uploadFileService.getUploadFileList(notiId);
+		// 제목
+		String title = request.getParameter("title");
 		
-		uploadFileService.dbDeleteFile(dbUploadFileList);
+		// 내용
+		String content = request.getParameter("smarteditor");
 		
+		// 수정전에 남아있던 첨부파일중 수정, 삭제된 첨부파일 아이디
+		String deleteFileId1 = request.getParameter("deleteFileId1");
+		String deleteFileId2 = request.getParameter("deleteFileId2");
+		String deleteFileId3 = request.getParameter("deleteFileId3");
+		String deleteFileId4 = request.getParameter("deleteFileId4");
+		String deleteFileId5 = request.getParameter("deleteFileId5");
+		String[] fileIds = {deleteFileId1, deleteFileId2, deleteFileId3, deleteFileId4, deleteFileId5};
+		
+		List<UploadFileVO> dbUploadFileList = new ArrayList<UploadFileVO>();
+			for(String fileid : fileIds){
+				if (fileid !=null) {
+					dbUploadFileList.add(uploadFileService.getFileVo(fileid));
+				}
+			}
+		if (dbUploadFileList.size() != 0) {
+			// 수정되고 없어진 첨부파일 삭제
+			uploadFileService.dbDeleteFile(dbUploadFileList);
+		}
+		
+		// 수정된 내용을 담는 게시글 객체
 		NoticeVO noticeVo = new NoticeVO(notiId, title, content);
+		
+		// 수정전 내용이 담긴 게시글 객체
 		NoticeVO originallyNoticeVo = noticeService.getNotice(notiId);
-		logger.debug("noticeVo : {}", noticeVo);
-		logger.debug("noticeVo.getId : {}", noticeVo.getId());
+		
+		// 게시글 수정
 		noticeService.updateNotice(noticeVo);
+		
+		// 첨부파일 리스트
+		List<Part> partList = new ArrayList<Part>();
+		for(Part file : request.getParts()){
+			if ("files".equals(file.getName()) && file.getSize() > 0) {
+				partList.add(file);
+			}
+		}
+		
 		BoardVO boardVo = boardService.getBoard(originallyNoticeVo.getId());
-		logger.debug("boardVo : {}", boardVo);
-		
-		Part file = request.getPart("file");
-		Part file2 = request.getPart("file2");
-		Part file3 = request.getPart("file3");
-		Part file4 = request.getPart("file4");
-		Part file5 = request.getPart("file5");
-		
-		if (file != null && file.getSize() > 0 ) {
-			PartUtil.uploadFile(file, boardVo , notiId);
-		} if(file2 != null && file2.getSize() > 0 ){
-			PartUtil.uploadFile(file2, boardVo , notiId);
-			
-		} if(file3 != null && file3.getSize() > 0 ){
-			PartUtil.uploadFile(file3, boardVo , notiId);
-			
-		} if(file4 != null && file4.getSize() > 0 ){
-			PartUtil.uploadFile(file4, boardVo , notiId);
-			
-		}if(file5 != null && file5.getSize() > 0 ){
-			PartUtil.uploadFile(file5, boardVo , notiId);
-		}
+		PartUtil.uploadFile(partList, boardVo, notiId);
 		List<UploadFileVO> uploadFileList = PartUtil.uploadFileList();
-		for(UploadFileVO fileVo : uploadFileList){
-			logger.debug("uploadFileId : {}", fileVo.getFileId());
-		}
+		
+		// 첨부파일 DB에 저장
 		uploadFileService.insertUploadFile(uploadFileList);
 		PartUtil.uploadFileListClear();
+		
+		// 수정된 게시글로 이동
 		response.sendRedirect(request.getContextPath() + "/noticeDetail?notiId="+notiId);
 	}
 

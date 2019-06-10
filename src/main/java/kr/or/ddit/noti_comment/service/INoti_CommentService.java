@@ -60,18 +60,9 @@ public interface INoti_CommentService {
 	* 변경이력 :
 	* @param id
 	* @return
-	* Method 설명 : 하나의 댓글 삭제
+	* Method 설명 : 해당 ID의 댓글 삭제
 	*/
-	int deleteCmt(Noti_commentVO ntcVo);
+	int deleteCmt(int ntcId);
 
-	/**
-	* Method : getCmt
-	* 작성자 : PC25
-	* 변경이력 :
-	* @param id
-	* @return
-	* Method 설명 : 하나의 댓글 정보
-	*/
-	Noti_commentVO getCmt(int id);
 
 }

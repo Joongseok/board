@@ -51,11 +51,11 @@ public interface INoti_CommentDao {
 	* 작성자 : PC25
 	* 변경이력 :
 	* @param sqlSession
-	* @param ntcVo
+	* @param id
 	* @return
 	* Method 설명 : 해당 게시글 이 삭제되면 댓글도 전부 cascade
 	*/
-	int deleteComment(SqlSession sqlSession, Noti_commentVO ntcVo);
+	int deleteComment(SqlSession sqlSession, int id);
 
 	/**
 	* Method : deleteCmt
@@ -63,18 +63,8 @@ public interface INoti_CommentDao {
 	* 변경이력 :
 	* @param id
 	* @return
-	* Method 설명 : 하나의 게시글 삭제
+	* Method 설명 : 해당 ID의 댓글 삭제
 	*/
-	int deleteCmt(Noti_commentVO ntcVo);
-
-	/**
-	* Method : getCmt
-	* 작성자 : PC25
-	* 변경이력 :
-	* @param id
-	* @return
-	* Method 설명 : 하나의 댓글
-	*/
-	Noti_commentVO getCmt(int id);
+	int deleteCmt(int ntcId);
 
 }

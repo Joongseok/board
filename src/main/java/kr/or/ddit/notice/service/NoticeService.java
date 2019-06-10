@@ -13,44 +13,45 @@ import kr.or.ddit.notice.dao.NoticeDao;
 import kr.or.ddit.notice.model.NoticeVO;
 
 public class NoticeService implements INoticeService {
-	private static final Logger logger = LoggerFactory
-			.getLogger(NoticeService.class);
+	
 	private INoticeDao noticeDao = new NoticeDao();
 	/**
 	* Method : noticeList
 	* 작성자 : PC25
 	* 변경이력 :
 	* @return
-	* Method 설명 : 게시판에 해당하는 게시글만 조회
+	* Method 설명 : 게시글 페이징 조회
 	*/
 	@Override
-	public Map<String, Object> noticeList(BoardVO boardVo,Map<String, Object> map) {
+	public Map<String, Object> noticePagingList(Map<String, Object> pageMap) {
+		int id = (int)pageMap.get("id");
 		
-		List<NoticeVO> noticeList = noticeDao.noticeList(map);
-		int noticeCnt = noticeDao.noticeCnt(boardVo);
-		int pageSize = (int) map.get("pageSize");
-		int division = 10;
+		List<NoticeVO> noticeList = noticeDao.noticePagingList(pageMap);
+		int noticeCnt = noticeDao.noticeCnt(id);
+		
+		int pageSize = (int) pageMap.get("pageSize");
 		int paginationSize = (int) Math.ceil((double)noticeCnt/pageSize);
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("noticeList", noticeList);
 		resultMap.put("paginationSize", paginationSize);
 		
-		
 		return resultMap;
 	}
+	
 	/**
 	* Method : noticeCnt
 	* 작성자 : PC25
 	* 변경이력 :
 	* @param boardVo
 	* @return
-	* Method 설명 : 삭제여부를 가려서 게시판의 번호를 생성하는 메서드
+	* Method 설명 : 해당 게시판의 게시글 수
 	*/
 	@Override
-	public int noticeCnt(BoardVO boardVo) {
-		return noticeDao.noticeCnt(boardVo);
+	public int noticeCnt(int id) {
+		return noticeDao.noticeCnt(id);
 	}
+	
 	/**
 	* Method : insertNotice
 	* 작성자 : PC25
@@ -118,9 +119,17 @@ public class NoticeService implements INoticeService {
 	* Method 설명 : 게시글 삭제
 	*/
 	@Override
-	public int deleteNotice(NoticeVO noticeVo) {
-		return noticeDao.deleteNotice(noticeVo);
+	public int deleteNotice(int notiId) {
+		return noticeDao.deleteNotice(notiId);
 	}
+	/**
+	* Method : replyNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param createNoticeVo
+	* @return
+	* Method 설명 : 답글
+	*/
 	@Override
 	public int replyNotice(NoticeVO createNoticeVo) {
 		return noticeDao.replyNotice(createNoticeVo);

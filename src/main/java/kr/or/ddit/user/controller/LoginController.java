@@ -1,17 +1,14 @@
 package kr.or.ddit.user.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import kr.or.ddit.board.model.BoardVO;
 import kr.or.ddit.board.service.BoardService;
 import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.encrypt.kisa.sha256.KISA_SHA256;
@@ -25,7 +22,6 @@ import org.slf4j.LoggerFactory;
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
 	
 	private IUserService userService;
 	private IBoardService boardService;
@@ -59,11 +55,6 @@ public class LoginController extends HttpServlet {
 			session.setAttribute("USER_INFO", userVo);
 			request.getSession().setAttribute("boardAllList", boardService.boardAllList());
 			request.getSession().setAttribute("boardList", boardService.boardList());
-//			request.getRequestDispatcher("/main").forward(request, response);
-			
-			Cookie userIdcookie = new Cookie("userIdCookie", userId);
-			userIdcookie.setMaxAge(60*60*24*15);
-			response.addCookie(userIdcookie);
 			
 			response.sendRedirect(request.getContextPath() + "/main.jsp");
 		}else{

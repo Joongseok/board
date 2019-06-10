@@ -5,7 +5,7 @@
 <mapper namespace="notice">
 
 <!-- 계층형 게시글(답글) -->
-<select id="noticeList" parameterType="map" resultType="noticeVo">
+<select id="noticePagingList" parameterType="map" resultType="noticeVo">
 	<![CDATA[
 		select *
 		from
@@ -22,16 +22,15 @@
 	]]>
 </select>
 <select id="noticeMaxId" resultType="int">
-	SELECT MAX(NOTIID)
+	SELECT MAX(NOTIID) +1
 	FROM NOTICE
 </select>
 
 <!-- 해당 게시판의 게시글 전체 개수 -->                	
-<select id="noticeCnt" parameterType="boardVo" resultType="int">
+<select id="noticeCnt" parameterType="int" resultType="int">
 	SELECT COUNT(*)
 	FROM NOTICE N, BOARD B
 	WHERE B.ID = #{id} AND N.ID = #{id}
-	AND N.DEL_YN = 'true'
 </select>	
 
 <!-- 게시글의 전체 개수 -->
@@ -87,10 +86,10 @@
 	WHERE NOTIID = #{notiId}
 </update>
 
-<update id="deleteNotice" parameterType="noticeVo">
+<update id="deleteNotice" parameterType="int">
 	UPDATE NOTICE
-	SET   TITLE = #{title}
-		 ,DEL_YN = #{del_yn}
+	SET   TITLE = '삭제된 게시글입니다.'
+		 ,DEL_YN = 'false'
 	WHERE NOTIID = #{notiId}
 </update>
 </mapper>

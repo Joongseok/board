@@ -1,10 +1,12 @@
 package kr.or.ddit.notice.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import kr.or.ddit.board.model.BoardVO;
 import kr.or.ddit.notice.model.NoticeVO;
 
 import org.junit.Before;
@@ -13,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NoticeServiceTest {
-
 	
 	INoticeService noticeService;
 	private static final Logger logger = LoggerFactory
@@ -27,80 +28,115 @@ public class NoticeServiceTest {
 	* Method : noticeListTest
 	* 작성자 : PC25
 	* 변경이력 :
-	* Method 설명 : 게시판에 해당하는 게시글만 조회 테스트
+	* 테스트 ID : TSS-04
+	* Method 설명 : 해당 게시판의 게시글 페이징 조회 테스트
 	*/
 	@Test
 	public void noticeListTest() {
 		/***Given***/
-		BoardVO boardVo = new BoardVO();
-		boardVo.setId(2);
-
+		int id = 1;
+		int page = 1;
+		int pageSize = 10;
+		Map<String, Object> pageMap = new HashMap<String, Object>();
+		pageMap.put("id", id);
+		pageMap.put("page", page);
+		pageMap.put("pageSize", pageSize);
 		/***When***/
-		List<NoticeVO> noticeList = noticeService.noticeList(boardVo);
-		/***Then***/
-		assertEquals(1, noticeList.size());
-
-	}
-	/**
-	* Method : noticeCntTest
-	* 작성자 : PC25
-	* 변경이력 :
-	* @param boardVo
-	* @return
-	* Method 설명 : 삭제여부를 가려서 게시판의 번호를 생성하는 메서드 테스트
-	*/
-	@Test
-	public void noticeCntTest(){
-		/***Given***/
-		BoardVO boardVo = new BoardVO();
-		boardVo.setId(1);
-
-		/***When***/
-		int noticeCnt = noticeService.noticeCnt(boardVo);
-		/***Then***/
-		assertEquals(6, noticeCnt);
-	}
-	
-	/**
-	* Method : noticeAllCnt
-	* 작성자 : PC25
-	* 변경이력 :
-	* Method 설명 : 모든게시판의 게시글 수를 가져오는 메서드 테스트
-	*/
-	@Test
-	public void noticeAllCntTest(){
-		/***Given***/
+		Map<String, Object> resultMap =  noticeService.noticePagingList(pageMap);
 		
-
-		/***When***/
-		int noticeAllCnt = noticeService.noticeAllCnt();
-		logger.debug("noticeAllCnt : {}", noticeAllCnt);
+		List<NoticeVO> noticeList = (List<NoticeVO>) resultMap.get("noticeList");
+		
 		/***Then***/
-
+		assertEquals(10, noticeList.size());
 	}
 	
 	/**
 	* Method : insertNoticeTest
 	* 작성자 : PC25
 	* 변경이력 :
+	* 테스트 ID : TSS-05
 	* Method 설명 : 게시글 작성 테스트
 	*/
 	@Test
 	public void insertNoticeTest(){
 		/***Given***/
-		int notiId = noticeService.noticeAllCnt() == 0 ? 1 : noticeService.noticeAllCnt() + 1;
-		NoticeVO noticeVo = new NoticeVO(
-				notiId
-				, "brown"
-				, "테스트제목"
-				, "테스트내용"
-				, 1
-				);
+		NoticeVO noticeVo = new NoticeVO(noticeService.noticeMaxId(), "sally", "테스트제목", "테스트내용", 1, 1);
 
 		/***When***/
 		int result = noticeService.insertNotice(noticeVo);
 		/***Then***/
 		assertEquals(1, result);
 	}
+	
+	/**
+	* Method : insertNoticeTest
+	* 작성자 : PC25
+	* 변경이력 :
+	* 테스트 ID : TSS-06
+	* Method 설명 : 게시글 조회 테스트
+	*/
+	@Test
+	public void readNoticeTest(){
+		/***Given***/
+		int notiId = noticeService.noticeAllCnt();
+		/***When***/
+		NoticeVO noticeVo = noticeService.getNotice(notiId);
+		logger.debug("noticeVo : {}", noticeVo);
+		/***Then***/
+		assertNotNull(noticeVo);
+	}
+	
+	/**
+	* Method : insertNoticeTest
+	* 작성자 : PC25
+	* 변경이력 :
+	* 테스트 ID : TSS-07
+	* Method 설명 : 게시글 수정 테스트
+	*/
+	@Test
+	public void updateNoticeTest(){
+		/***Given***/
+		NoticeVO noticeVo = new NoticeVO(noticeService.noticeAllCnt(), "수정 테스트 제목", "수정테스트 내용");
 
+		/***When***/
+		int result = noticeService.updateNotice(noticeVo);
+		/***Then***/
+		assertEquals(1, result);
+	}
+	
+	/**
+	 * Method : insertNoticeTest
+	 * 작성자 : PC25
+	 * 변경이력 :
+	 * 테스트 ID : TSS-08
+	 * Method 설명 : 게시글 삭제 테스트
+	 */
+	@Test
+	public void deleteNoticeTest(){
+		/***Given***/
+		int notiId = noticeService.noticeAllCnt();
+		/***When***/
+		int result = noticeService.deleteNotice(notiId);
+		/***Then***/
+		assertEquals(1, result);
+	}
+	
+	/**
+	* Method : insertNoticeTest
+	* 작성자 : PC25
+	* 변경이력 :
+	* 테스트 ID : TSS-09
+	* Method 설명 : 답글 작성 테스트
+	*/
+	@Test
+	public void replyNoticeTest(){
+		/***Given***/
+		NoticeVO noticeVo = new NoticeVO(noticeService.noticeMaxId(), "brown", "답글테스트 제목", "답글 테스트 내용", noticeService.noticeAllCnt(), 1, 1);
+
+		/***When***/
+		int result = noticeService.replyNotice(noticeVo);
+		/***Then***/
+		assertEquals(1, result);
+	}
+	
 }

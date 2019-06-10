@@ -12,9 +12,9 @@ public interface INoticeService {
 	* 작성자 : PC25
 	* 변경이력 :
 	* @return
-	* Method 설명 : 게시판에 해당하는 게시글만 조회
+	* Method 설명 : 게시글 페이징 조회
 	*/
-	Map<String, Object> noticeList(BoardVO boardVo ,Map<String, Object> map);
+	Map<String, Object> noticePagingList(Map<String, Object> pageMap);
 	
 	/**
 	* Method : noticeCnt
@@ -22,9 +22,9 @@ public interface INoticeService {
 	* 변경이력 :
 	* @param boardVo
 	* @return
-	* Method 설명 : 삭제여부를 가려서 게시판의 번호를 생성하는 메서드
+	* Method 설명 : 해당 게시판의 게시글 수
 	*/
-	int noticeCnt(BoardVO boardVo);
+	int noticeCnt(int id);
 	
 	/**
 	* Method : insertNotice
@@ -78,11 +78,11 @@ public interface INoticeService {
 	* Method : deleteNotice
 	* 작성자 : PC25
 	* 변경이력 :
-	* @param noticeVo
+	* @param notiId
 	* @return
 	* Method 설명 : 게시글 삭제
 	*/
-	int deleteNotice(NoticeVO noticeVo);
+	int deleteNotice(int notiId);
 
 	/**
 	* Method : replyNotice

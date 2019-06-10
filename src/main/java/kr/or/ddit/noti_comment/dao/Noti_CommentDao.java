@@ -40,6 +40,14 @@ public class Noti_CommentDao implements INoti_CommentDao {
 		return commentMaxId;
 	}
 
+	/**
+	* Method : insertComment
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param ntcVo
+	* @return
+	* Method 설명 : 댓글 생성
+	*/
 	@Override
 	public int insertComment(Noti_commentVO ntcVo) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
@@ -49,6 +57,14 @@ public class Noti_CommentDao implements INoti_CommentDao {
 		return insertComment;
 	}
 
+	/**
+	* Method : commentList
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param notiId
+	* @return
+	* Method 설명 : 댓글 리스트
+	*/
 	@Override
 	public List<Noti_commentVO> commentList(int notiId) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
@@ -57,26 +73,34 @@ public class Noti_CommentDao implements INoti_CommentDao {
 		return commentList;
 	}
 
+	/**
+	* Method : deleteComment
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param sqlSession
+	* @param ntcVo
+	* @return
+	* Method 설명 : 해당 게시글 이 삭제되면 댓글도 전부 cascade
+	*/
 	@Override
-	public int deleteComment(SqlSession sqlSession, Noti_commentVO ntcVo) {
-		return sqlSession.update("noti_comment.deleteComment", ntcVo);
+	public int deleteComment(SqlSession sqlSession, int id) {
+		return sqlSession.update("noti_comment.deleteComment", id);
 	}
 
+	/**
+	* Method : deleteCmt
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param ntcId
+	* @return
+	* Method 설명 : ID에 해당하는 댓글 삭제
+	*/
 	@Override
-	public int deleteCmt(Noti_commentVO ntcVo) {
+	public int deleteCmt(int ntcId) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
-		int result = sqlSession.update("noti_comment.deleteCmt", ntcVo);
+		int result = sqlSession.update("noti_comment.deleteCmt", ntcId);
 		sqlSession.commit();
 		return result;
 	}
-
-	@Override
-	public Noti_commentVO getCmt(int id) {
-		SqlSession sqlSession = MybatisUtil.getSqlSession();
-		Noti_commentVO ntcVo = sqlSession.selectOne("noti_comment.getCmt", id);
-		return ntcVo;
-	}
-
-
 
 }

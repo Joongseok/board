@@ -11,7 +11,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico">
@@ -28,15 +27,10 @@
 
 <script>
 	$(document).ready(function (){
-		//  사용자 tr태그 이벤트 등록
+		//  tr태그 이벤트 등록
 		$(".noticeTr").on("click", function(){
 			console.log("noticeTr click");
 			
-			//userId를 획득하는 방법
-// 			$(this).find(".userId").html();
-// 			$(this).data("userid");
-
-			// 사용자 아이디를 #userId 값으로 설정해주고
 			var notiId = $(this).find(".idHidden").val();
 			$("#notiId").val(notiId);
 			var del_yn = $(this).find(".del_ynHidden").val();
@@ -48,7 +42,6 @@
 			}
 		});
 	});
-
 </script>
 </head>
 
@@ -108,40 +101,43 @@
 								</c:forEach>
 							</table>
 						</div>
-						
 
-					<a class="btn btn-default pull-right" href="${pageContext.request.contextPath }/noticeForm?id=${boardVo.id}">게시글 작성</a>
+					<a class="btn btn-default pull-right" href="${pageContext.request.contextPath }/noticeForm?id=${pageMap.id}">게시글 작성</a>
 						<div class="text-center">
-							<ul class="pagination">
 								<!--  내가 현재 몇번째 페이지에 있는가? -->
+							 <ul class="pager">
 								<c:choose> 
-									<c:when test="${pageVo.page  == 1}">
+									<c:when test="${pageMap.page  == 1}">
 										<li class="disabled"><span>«</span></li>
+										<li class="disabled"><span>Previous</span></li>
 									</c:when>
 									<c:otherwise>
-										<li><a href="${pageContext.request.contextPath}/noticeController?page=${pageVo.page - 1 }&pageSize=${pageVo.pageSize}&id=${boardVo.id}">«</a></li>
+										<li><a href="${pageContext.request.contextPath}/noticeController?page=${1}&pageSize=${pageMap.pageSize}&id=${pageMap.id}">«</a></li>
+										<li><a href="${pageContext.request.contextPath}/noticeController?page=${pageMap.page - 1 }&pageSize=${pageMap.pageSize}&id=${pageMap.id}">Previous</a></li>
 									</c:otherwise>
 								</c:choose>
 									
-								<c:forEach var="i" begin="1" end="${paginationSize}" step="1">
+								<c:forEach var="i" begin="1" end="${paginationSize}">
 									<li> 
 									<c:choose>    
-										<c:when test="${pageVo.page == i}">
+										<c:when test="${pageMap.page == i}">
 											<li class="active" ><span>${i }</span> </li>
 										</c:when>
-										<c:when test="${pageVo.page != i}">
-											<a href="${pageContext.request.contextPath}/noticeController?page=${i}&pageSize=${pageVo.pageSize}&id=${boardVo.id}">${i}</a>
+										<c:when test="${pageMap.page != i}">
+											<a href="${pageContext.request.contextPath}/noticeController?page=${i}&pageSize=${pageMap.pageSize}&id=${pageMap.id}">${i}</a>
 										</c:when>
 									</c:choose>
 									</li>
 								</c:forEach>
 								
 								<c:choose> 
-									<c:when test="${pageVo.page  == paginationSize}">
+									<c:when test="${pageMap.page  == paginationSize}">
+										<li class="disabled"><span>next</span></li>
 										<li class="disabled"><span>»</span></li>
 									</c:when>
 									<c:otherwise>
-										<li class="page-item" ><a href="${pageContext.request.contextPath}/noticeController?page=${pageVo.page + 1 }&pageSize=${pageVo.pageSize}&id=${boardVo.id}">»</a></li>
+										<li class="page-item" ><a href="${pageContext.request.contextPath}/noticeController?page=${pageMap.page + 1 }&pageSize=${pageMap.pageSize}&id=${pageMap.id}">next</a></li>
+										<li class="page-item" ><a href="${pageContext.request.contextPath}/noticeController?page=${paginationSize}&pageSize=${pageMap.pageSize}&id=${pageMap.id}">»</a></li>
 									</c:otherwise>
 								</c:choose>
 							</ul>

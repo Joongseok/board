@@ -14,17 +14,17 @@ public interface INoticeDao {
 	* @return
 	* Method 설명 : 게시판에 해당하는 게시글만 조회
 	*/
-	List<NoticeVO> noticeList(Map<String, Object>map);
+	List<NoticeVO> noticePagingList(Map<String, Object>pageMap);
 	
 	/**
 	* Method : noticeCnt
 	* 작성자 : PC25
 	* 변경이력 :
-	* @param boardVo
+	* @param id
 	* @return
-	* Method 설명 : 삭제여부를 가려서 게시판의 번호를 생성하는 메서드
+	* Method 설명 : 해당 게시판의 게시글 수
 	*/
-	int noticeCnt(BoardVO boardVo);
+	int noticeCnt(int id);
 	
 	/**
 	* Method : insertNotice
@@ -78,11 +78,11 @@ public interface INoticeDao {
 	* Method : deleteNotice
 	* 작성자 : PC25
 	* 변경이력 :
-	* @param noticeVo
+	* @param notiId
 	* @return
 	* Method 설명 : 게시글 삭제
 	*/
-	int deleteNotice(NoticeVO noticeVo);
+	int deleteNotice(int notiId);
 
 	/**
 	* Method : replyNotice

@@ -18,12 +18,12 @@ public class NoticeDao implements INoticeDao {
 	* 변경이력 :
 	* @param boardVo
 	* @return
-	* Method 설명 : 게시판에 해당하는 게시글만 조회
+	* Method 설명 : 게시글 페이징 조회
 	*/
 	@Override
-	public List<NoticeVO> noticeList(Map<String, Object>map) {
+	public List<NoticeVO> noticePagingList(Map<String, Object>pageMap) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
-		List<NoticeVO> noticeList = sqlSession.selectList("notice.noticeList", map);
+		List<NoticeVO> noticeList = sqlSession.selectList("notice.noticePagingList", pageMap);
 		sqlSession.close();
 		return noticeList;
 	}
@@ -33,12 +33,12 @@ public class NoticeDao implements INoticeDao {
 	* 변경이력 :
 	* @param boardVo
 	* @return
-	* Method 설명 : 삭제여부를 가려서 게시판의 번호를 생성하는 메서드
+	* Method 설명 : 게시판의 번호를 출력하는 메서드
 	*/
 	@Override
-	public int noticeCnt(BoardVO boardVo) {
+	public int noticeCnt(int id) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
-		int noticeCnt = sqlSession.selectOne("notice.noticeCnt", boardVo);
+		int noticeCnt = sqlSession.selectOne("notice.noticeCnt", id);
 		sqlSession.close();
 		return noticeCnt;
 	}
@@ -130,13 +130,22 @@ public class NoticeDao implements INoticeDao {
 	* Method 설명 : 게시글 삭제
 	*/
 	@Override
-	public int deleteNotice(NoticeVO noticeVo) {
+	public int deleteNotice(int notiId) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();
-		int deleteNotice = sqlSession.delete("notice.deleteNotice", noticeVo);
+		int deleteNotice = sqlSession.delete("notice.deleteNotice", notiId);
 		sqlSession.commit();
 		sqlSession.close();
 		return deleteNotice;
 	}
+	
+	/**
+	* Method : replyNotice
+	* 작성자 : PC25
+	* 변경이력 :
+	* @param createNoticeVo
+	* @return
+	* Method 설명 : 답글
+	*/
 	@Override
 	public int replyNotice(NoticeVO createNoticeVo) {
 		SqlSession sqlSession = MybatisUtil.getSqlSession();

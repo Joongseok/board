@@ -8,7 +8,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico">
@@ -18,21 +17,25 @@
 	.lprodTr:hover{
 		cursor: pointer;
 	}
+	
 </style>
 <!-- css, js -->
 <%@include file="/common/basicLib.jsp"%>
 <script>
 $(document).ready(function () {
 	
+	if($("#userId").val() == ""){
+		alert("로그인을 하지 않았습니다.")
+		$("#frm").attr("action", "<%=request.getContextPath()%>/login/login.jsp");
+		$("#frm").submit();
+		return;
+	}
+	
 	if( $(".update_use_yn").val() == "true"){
 		$(".updateUse_yn").val("true");
 	}
 	
 	$("#createClick").on("click", function (){
-		if($("#user_info").val() == "" || $("#user_info").val() == null){
-			alert("로그인을 먼저 해주세요");
-			return;
-		}
 		if($("#create_use_yn").val() == "true"){
 			
 			$("#use_yn").val("true");
@@ -45,10 +48,6 @@ $(document).ready(function () {
 		}
 	})
 	$('#create_use_yn').change(function() {
-		if($("#user_info").val() == "" || $("#user_info").val() == null){
-			alert("로그인을 먼저 해주세요");
-			return;
-		}
 		if($(this).val == ""){
 			$(this).val("true");
 		}
@@ -56,27 +55,13 @@ $(document).ready(function () {
 	    $("#use_yn").val(option);
 	});
 	$('.update_use_yn').change(function() {
-		if($("#user_info").val() == "" || $("#user_info").val() == null){
-			alert("로그인을 먼저 해주세요");
-			return;
-		}
 		if($(this).val == ""){
 			$(this).val("true");
 		}
 	    var option = $(this).val();
 	    alert($(this).val())
-// 	    $(this).find(":hidden").find(".updateUse_yn").val(option);
 	    $(".updateUse_yn").val(option);
 	});
-	
-	$(":submit").on("click", function (){
-		if($("#user_info").val() == "" || $("#user_info").val() == null){
-			alert("로그인을 먼저 해주세요");
-			return;
-		}
-	})
-	
-	
 })
 </script>
 </head>
@@ -144,6 +129,7 @@ $(document).ready(function () {
 													</select>
 													<input type="hidden" class="updateUse_yn" name="updateUse_yn">
 													<input type="hidden" name="id" value="${board.id }">
+													<input type="hidden" id="userId" value="${USER_INFO.userId}">
 													<input type="submit" class="form-control"value="게시판 수정">
 												</form>
 											</td>

@@ -13,8 +13,6 @@
 					class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="#"> 
-			<!-- 사용자가 로그인 하지 않고 메인화면으로 직접 접속했을 경우
-				(localhost/jsp/main.jsp) 접속하지 않은 사용자 입니다 문구를 표현-->
 			<c:choose> 
 				<c:when test="${USER_INFO eq null}"> 접속하지 않은 사용자 입니다.</c:when> 
 				<c:otherwise>${USER_INFO.name}</c:otherwise>
@@ -23,7 +21,9 @@
 		</div>
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="${pageContext.request.contextPath}/login"">login</a></li>
+			<c:if test="${USER_INFO == null }">
+				<li><a href="${pageContext.request.contextPath}/login">login</a></li>
+			</c:if>
 				<li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
 			</ul>
 		</div>

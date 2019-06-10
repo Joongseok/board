@@ -1,7 +1,6 @@
 package kr.or.ddit.notice.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -20,9 +19,6 @@ import kr.or.ddit.uploadFile.model.UploadFileVO;
 import kr.or.ddit.uploadFile.service.IUploadFileService;
 import kr.or.ddit.uploadFile.service.UploadFileService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @WebServlet("/noticeDetail")
 public class NoticeDetail extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -38,34 +34,27 @@ public class NoticeDetail extends HttpServlet {
 		uploadFileService = new UploadFileService();
 	}
 	
-	private static final Logger logger = LoggerFactory
-			.getLogger(NoticeDetail.class);
-	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("noticeDetailController doGet()");
-		
 		String notiIdStr = request.getParameter("notiId");
-		logger.debug("detail : {}", notiIdStr);
+		
+		// 해당 게시글 번호
 		int notiId = Integer.parseInt(notiIdStr);
 		
+		// 게시글 번호에 해당하는 게시글 정보
 		NoticeVO noticeVo = noticeService.getNotice(notiId);
+		
+		// 게시글 번호에 해당하는 첨부파일 리스트
 		List<UploadFileVO> uploadFileList =  uploadFileService.getUploadFileList(notiId);
 		
+		// 게시글 번호에 해당하는 댓글 리스트
 		List<Noti_commentVO> ntcList = ntcService.commentList(notiId);
 				
 		request.setAttribute("noticeVo", noticeVo);
 		request.setAttribute("uploadFileList", uploadFileList);
 		request.setAttribute("ntcList", ntcList);
-		request.setAttribute("notiId", notiId);
+		
+		// 조회 화면으로 이동
 		request.getRequestDispatcher("/notice/noticeDetail.jsp").forward(request, response);
 		
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
 }

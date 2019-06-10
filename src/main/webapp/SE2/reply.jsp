@@ -52,7 +52,7 @@ $(document).ready(function() {
 			}
 		}
 	})
-	count = parseInt(2);
+	var count = parseInt(2);
 	$("#count").val(count);
 	$("#pp").on("click", function (){
 		
@@ -61,9 +61,7 @@ $(document).ready(function() {
 			return;
 		}
 // 		$(":file").append("<p>gd </p>");
-		$('<input type="file" id="file2" name="file">').insertAfter("#file");
-		$("#file2").attr("name", "file" + count);
-		$("#file2").attr("id", "file" + count);
+		$('<input type="file" name="files">').insertAfter("#file");
 		count +=parseInt(1);
 		$("#count").val(count);
 	});
@@ -96,7 +94,7 @@ function validation(){
 
 	<textarea name="smarteditor" id="smarteditor" rows="10" cols="100" style="width:766px; height:412px;"></textarea> 
 첨부파일 추가 : <img alt="" id="pp" src="${pageContext.request.contextPath }/img/plus.png">
-<input type="file" name="file" id="file">
+<input type="file" name="files" id="file">
 
 <input type="hidden" id="count" >
 <input type="hidden" name="notiId" value="${notiId }">
